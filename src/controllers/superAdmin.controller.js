@@ -51,6 +51,7 @@ const signIn = async (req, res) => {
     const token = generateToken(findEmail)
     res.json({
       token,
+      findEmail,
       message: "Login Successfully",
     })
   } catch (error) {

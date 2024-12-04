@@ -2,6 +2,7 @@ const express = require("express");
 const connection = require("./config/connectdb");
 const superRouter = require("./routes/superAdmin.route")
 const adminRouter = require("./routes/admin.route")
+const productRouter = require("./routes/product.route")
 
 require("dotenv").config();
 const cors = require("cors");
@@ -12,10 +13,13 @@ const port = 7000;
 
 app.use(cors("*"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use("/fileStorage", express.static("fileStorage"))
 connection();
 
 app.use("/super", superRouter);
 app.use("/admin", adminRouter);
+app.use("/pharmacy", productRouter)
 
 
 app.listen(port, () => {
