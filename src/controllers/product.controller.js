@@ -12,7 +12,6 @@ const createProduct = async (req, res,) => {
         productFileName: file.filename,
         filePath: file.path,
         fileType: file.mimetype,
-        fileOriginalName: file.originalFileName,
       };
     }
     console.log(data);
@@ -31,8 +30,30 @@ const createProduct = async (req, res,) => {
   }
 };
 
+const getProduct = async (req, res,) => {
+  try {
+    let findProduct = await productModel.find();
+    // if (findProduct.length === 0) {
+    //   res.status(404).json({message: "No product found"});
+    // }
+    findProduct = [
+      ...findProduct
+    ]
+    console.log(findProduct);
+    
+    res.status(200).json({
+      findProduct,
+    })
+  } catch (error) {
+    res.status(400).json({
+      message: error.message
+    })
+  }
+}
+
 
 
 module.exports = {
     createProduct,
+    getProduct
 } 

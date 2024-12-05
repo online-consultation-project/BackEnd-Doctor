@@ -47,9 +47,6 @@ const productSchema = new mongoose.Schema(
     fileType: {
       type: String,
     },
-    fileOriginalName: {
-      type: String,
-    }
   },
   { timestamps: true }
 );

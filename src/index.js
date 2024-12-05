@@ -14,7 +14,7 @@ const port = 7000;
 app.use(cors("*"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
-app.use("/fileStorage", express.static("fileStorage"))
+app.use("/upload", express.static("src/fileStorage"))
 connection();
 
 app.use("/super", superRouter);

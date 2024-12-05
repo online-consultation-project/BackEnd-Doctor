@@ -8,6 +8,7 @@ router.use(verifyToken)
 
 router
 .route("/product")
-.post(singleUpload, controller.createProduct);
+.post(singleUpload, controller.createProduct)
+.get(controller.getProduct)
 
 module.exports = router;
