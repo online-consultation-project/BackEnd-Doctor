@@ -10,5 +10,11 @@ router
 .route("/product")
 .post(singleUpload, controller.createProduct)
 .get(controller.getProduct)
+.put(singleUpload,controller.updateProduct)
+
+router
+.route("/productgetdata")
+.get(controller.getProductById)
+
 
 module.exports = router;
