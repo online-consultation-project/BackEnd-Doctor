@@ -95,9 +95,25 @@ const getAllUsers = async (req, res) => {
 //   }
 // };
 
+// Admin Profile
 
+const getAdminData = async (req, res) => {
+  try {
+    const id = req.query;
+    const getProfile = await adminData.findOne({ _id: id });
+    console.log("sri", getProfile);
 
-//finding admin by id
+    if (!getProfile) {
+      return res.status(400).json({ message: "Mail id not exist" });
+    }
+    res.status(200).json(getProfile);
+  } catch (error) {
+    res.json({
+      error: error.message,
+    });
+  }
+};
+
 const getIdByUpdate = async (req, res) => {
   try {
     const { _id } = req.query;
@@ -114,7 +130,6 @@ const getIdByUpdate = async (req, res) => {
   }
 };
 
-//update admin by id
 const updateAdmin = async (req, res) => {
   try {
     const { objId } = req.query;
@@ -135,28 +150,6 @@ const updateAdmin = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: error.message,
-    });
-  }
-};
-
-
-//  Admin Profile
-
-// Getting Profile
-
-const getAdminData = async (req, res) => {
-  try {
-    const id = req.query;
-    const getProfile = await adminData.findOne({ _id: id });
-    console.log("sri", getProfile);
-
-    if (!getProfile) {
-      return res.status(400).json({ message: "Mail id not exist" });
-    }
-    res.status(200).json(getProfile);
-  } catch (error) {
-    res.json({
-      error: error.message,
     });
   }
 };
@@ -187,9 +180,7 @@ const createSlot = async (req, res) => {
   }
 };
 
-
-
-const getSlotById = async (req, res) => {
+getSlotById = async (req, res) => {
   try {
     const { doctor_id } = req.query;
 
@@ -205,28 +196,11 @@ const getSlotById = async (req, res) => {
   }
 };
 
-const getSlotByIdForUpdate = async (req, res) => {
+const addSlots = async (req, res) => {
   try {
-    const { doctor_id } = req.query;
-    console.log("doctorid", doctor_id);
+    const { objId } = req.query;
 
-    let findDoctorSlot = await slot.findById({ doctor_id:doctor_id });
-
-    if (!findDoctorSlot) {
-      return res.status(404).json({ message: "Data not found" });
-    }
-    console.log(findDoctorSlot.slots);
-    res.json(findDoctorSlot);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-const editSlots = async (req, res) => {
-  try {
-    const { doctor_id } = req.query;
-
-    const updateAdminSlot = await adminData.findByIdAndUpdate({doctor_id}, req.body, {
+    const updateAdminSlot = await adminData.findByIdAndUpdate(objId, req.body, {
       new: true,
     });
 
@@ -248,9 +222,7 @@ module.exports = {
   updateAdmin,
   AdminSignin,
   getAdminData,
-
+  addSlots,
   createSlot,
   getSlotById,
-  getSlotByIdForUpdate,
-  editSlots,
 };
