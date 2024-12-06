@@ -2,7 +2,7 @@
 const superAdmin = require("../models/superAdmin.model");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser} =require("../utils/mailSend")
-const { generateToken } = require("../middlewares/authToken");
+const { generateToken } = require("../middlewares/authSuper");
 const bcrypt = require("bcrypt");
 
 const signup = async (req,res) => {
