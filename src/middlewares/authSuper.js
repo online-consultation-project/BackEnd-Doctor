@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {signin} = require("../models/superAdmin.model")
+const superAdmin = require("../models/superAdmin.model")
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
 const generateToken = (data) => {
@@ -9,7 +9,7 @@ const generateToken = (data) => {
 
 const verifyToken = async (req, res, next) => {
   const token = req.headers.authorization;
-console.log(token);
+// console.log(token);
 
   if (!token) {
     return res.status(401).json({ Message: "user must be signIn.." });
@@ -19,7 +19,7 @@ console.log(token);
     const payload = jwt.verify(withoutBearer, key);
 
 
-    const checkUser = await signin.findById(payload.data._id);
+    const checkUser = await superAdmin.superAdmin.findById(payload.data._id)
     console.log(checkUser);
     if (!checkUser)
       return res

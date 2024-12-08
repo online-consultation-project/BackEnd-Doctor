@@ -2,13 +2,13 @@
 const superAdmin = require("../models/superAdmin.model");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser} =require("../utils/mailSend")
-const { generateToken } = require("../middlewares/authSuper");
 const bcrypt = require("bcrypt");
+const generateToken = require("../middlewares/authSuper")
 
 const signup = async (req,res) => {
   try {
     const { email, } = req.body;
-    const existingEmail = await superAdmin.findOne({ email });
+    const existingEmail = await superAdmin.superAdmin.findOne({ email });
     if (existingEmail) {
       return res.status(404).json({ message: "Email already exists..." });
     }
@@ -19,7 +19,7 @@ const signup = async (req,res) => {
       ...req.body,
       password: hash,
     };
-    await superAdmin.create(data);
+    await superAdmin.superAdmin.create(data);
     await sendMailToUser(email,password);
     res.json({
       message: "Account created successfully",
@@ -36,7 +36,7 @@ const signup = async (req,res) => {
 const signIn = async (req, res) => {
   try {
     const { email, password} = req.body
-    const findEmail = await superAdmin.findOne({email})
+    const findEmail = await superAdmin.superAdmin.findOne({email})
     if (!findEmail) {
       return res.status(400).json({
         message: "Email not Registered",
@@ -48,7 +48,9 @@ const signIn = async (req, res) => {
         message: "Invalid Password",
       })
     }
-    const token = generateToken(findEmail)
+    const token = generateToken.generateToken(findEmail)
+    console.log(token);
+    
     res.json({
       token,
       findEmail,

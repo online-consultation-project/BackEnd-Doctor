@@ -307,5 +307,6 @@ module.exports = {
   createSlot,
   getSlotById,
   editSlots,
-  getSlotByIdForUpdate
+  getSlotByIdForUpdate,
+  getLimitedData
 };
