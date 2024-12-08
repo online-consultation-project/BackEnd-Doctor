@@ -4,7 +4,6 @@ const controller = require("../controllers/admin.controller");
 const { verifyToken } = require("../middlewares/authToken");
 const superVerifyToken = require("../middlewares/authSuper");
 
-router.route("/adminsigin").post(controller.AdminSignin);
 
 // super Admin
 
@@ -13,12 +12,18 @@ router
   .post(controller.addAdmin)
   .get(controller.getAllUsers)
   .put(superVerifyToken.verifyToken, controller.updateAdmin);
+router
+.route("/limitedgetadmin")
+.get(superVerifyToken.verifyToken,controller.getLimitedData)
 
 router
   .route("/getadmin")
   .get(superVerifyToken.verifyToken, controller.getIdByUpdate);
 
 // admin
+
+router.route("/adminsigin").post(controller.AdminSignin);
+
 
 router.use(verifyToken);
 
