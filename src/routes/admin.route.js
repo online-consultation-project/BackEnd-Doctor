@@ -37,7 +37,7 @@ router.route("/getprofile").get(controller.getIdByUpdate);
 
 router.route("/getadminProfile").get(controller.getAdminData);
 
-router.route("/getslotforupdate").get(controller.getSlotForUpdate);
+router.route("/getslotforupdate").get(controller.getSlotByIdForUpdate);
 
 router
   .route("/slots")

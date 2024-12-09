@@ -64,6 +64,19 @@ const AdminSignin = async (req, res) => {
   }
 };
 
+const getLimitedData = async (req, res) => {
+  try {
+    const getLimitData = await adminData.find().sort({ createAt: -1 }).limit(5)
+    res.status(200).json({
+      getLimitData,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
 const getAllUsers = async (req, res) => {
   try {
     const findAllUser = await adminData.find();
@@ -95,12 +108,13 @@ const getAllUsers = async (req, res) => {
 //   }
 // };
 
-// Admin Profile
+
 
 const getAdminData = async (req, res) => {
   try {
     const id = req.query;
     const getProfile = await adminData.findOne({ _id: id });
+    console.log("sri", getProfile);
 
     if (!getProfile) {
       return res.status(400).json({ message: "Mail id not exist" });
@@ -128,6 +142,7 @@ const getIdByUpdate = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 const updateAdmin = async (req, res) => {
   try {
@@ -179,7 +194,67 @@ const createSlot = async (req, res) => {
   }
 };
 
-getSlotById = async (req, res) => {
+// const getSlotById = async (req, res) => {
+//   try {
+//     const { doctor_id } = req.query;
+
+//     let findDoctorSlot = await slot.findOne({ doctor_id });
+
+//     if (!findDoctorSlot) {
+//       return res.status(404).json({ message: "Data not found" });
+//     }
+//     console.log(findDoctorSlot.slots);
+//     res.json(findDoctorSlot);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+// const addSlots = async (req, res) => {
+//   try {
+//     const { objId } = req.query;
+
+//     const updateAdminSlot = await adminData.findByIdAndUpdate(objId, req.body, {
+//       new: true,
+//     });
+
+//     if (!updateAdminSlot) {
+//       return res.status(404).json({ message: "Admin not Found" });
+//     }
+//     res.json({ updateAdminSlot, message: "slot updated Successfully..!" });
+//   } catch (error) {
+//     res.status(400).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
+
+// const createSlot = async (req, res) => {
+//   try {
+//     const { doctor_id } = req.body;
+
+//     if (!doctor_id) {
+//       return res.status(400).json({ message: "Doctor ID is required" });
+//     }
+
+//     const findAdmin = await adminData.findById(doctor_id);
+
+//     if (!findAdmin) {
+//       return res.status(404).json({ message: "Doctor Not Found" });
+//     }
+
+//     const slotData = await slot.create(req.body);
+
+//     if (slotData) {
+//       res.status(201).json({ message: "Slot created successfully", slotData });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+const getSlotById = async (req, res) => {
   try {
     const { doctor_id } = req.query;
 
@@ -195,44 +270,8 @@ getSlotById = async (req, res) => {
   }
 };
 
-const addSlots = async (req, res) => {
-  try {
-    const { objId } = req.query;
 
-    const updateAdminSlot = await adminData.findByIdAndUpdate(objId, req.body, {
-      new: true,
-    });
-
-    if (!updateAdminSlot) {
-      return res.status(404).json({ message: "Admin not Found" });
-    }
-    res.json({ updateAdminSlot, message: "slot updated Successfully..!" });
-  } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
-  }
-};
-
- const getSlotById = async (req, res) => {
-  try {
-    const { doctor_id } = req.query;
-
-    let findDoctorSlot = await slot.findOne({ doctor_id });
-
-    if (!findDoctorSlot) {
-      return res.status(404).json({ message: "Data not found" });
-    }
-    console.log(findDoctorSlot.slots);
-    res.json(findDoctorSlot);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-
-
-getSlotByIdForUpdate = async (req, res) => {
+const getSlotByIdForUpdate = async (req, res) => {
   try {
     const { doctor_id } = req.query;
 
@@ -266,6 +305,7 @@ const editSlots = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   addAdmin,
