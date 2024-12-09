@@ -274,12 +274,9 @@ module.exports = {
   updateAdmin,
   AdminSignin,
   getAdminData,
-  addSlots,
   createSlot,
   getSlotById,
   editSlots,
-
   getSlotByIdForUpdate,
   getLimitedData
-
 };
