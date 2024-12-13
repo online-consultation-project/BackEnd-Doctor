@@ -1,17 +1,17 @@
-const slot = require("../models/admin.model");
+const slotModel = require("../models/admin.model");
 
 const createSlots = async (req, res) => {
   const { doctorId, date, slots } = req.body;
 
   try {
-    const existingSlot = await slot.slot.findOne({ doctorId, date });
+    const existingSlot = await slotModel.slot.findOne({ doctorId, date });
     if (existingSlot) {
       return res
         .status(400)
         .json({ message: "Slots already exist for this date." });
     }
 
-    const newSlot = new slot.slot({ doctorId, date, slots });
+    const newSlot = new slotModel.slot({ doctorId, date, slots });
     await newSlot.save();
 
     res
@@ -27,13 +27,14 @@ const getSlots = async (req, res) => {
   const { date } = req.query;
   console.log("=====>", doctorId, date);
   try {
-    const slot = await slot.slot.findOne({ doctorId, date });
+    const slot = await slotModel.slot.findOne({ doctorId, date });
     if (!slot) {
       return res.status(404).json({ message: "No slots found for this date." });
     }
     res.status(200).json(slot);
   } catch (error) {
     res.status(500).json({ message: "Server error.", error });
+    console.log(error);
   }
 };
 
@@ -42,7 +43,7 @@ const updateSlots = async (req, res) => {
   const { date, slots } = req.body;
 
   try {
-    const updatedSlot = await slot.slot.findOneAndUpdate(
+    const updatedSlot = await slotModel.slot.findOneAndUpdate(
       { doctorId, date },
       { slots },
       { new: true, upsert: true }
