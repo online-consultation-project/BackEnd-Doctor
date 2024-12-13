@@ -3,10 +3,12 @@ const bcrypt = require("bcrypt");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser } = require("../utils/mailSend");
 const { generateToken } = require("../middlewares/authToken");
+const fs = require("fs");
 
 const addAdmin = async (req, res) => {
   try {
     const { email, firstName, lastName } = req.body;
+    // const file = req.file;
     console.log(req.body);
 
     const findEmail = await adminData.findOne({ email });
@@ -22,6 +24,14 @@ const addAdmin = async (req, res) => {
       ...req.body,
       password: hash,
     };
+    // if (file) {
+    //   data = {
+    //     ...data,
+    //     productFileName: file.filename,
+    //     filePath: file.path,
+    //     fileType: file.mimetype,
+    //   };
+    // }
     let addAdmindata = await adminData.create(data);
     await sendMailToUser(email, name, password);
     res.status(200).json({
@@ -66,16 +76,16 @@ const AdminSignin = async (req, res) => {
 
 const getLimitedData = async (req, res) => {
   try {
-    const getLimitData = await adminData.find().sort({ createAt: -1 }).limit(5)
+    const getLimitData = await adminData.find().sort({ createAt: -1 }).limit(5);
     res.status(200).json({
       getLimitData,
-    })
+    });
   } catch (error) {
     res.status(500).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 const getAllUsers = async (req, res) => {
   try {
@@ -107,8 +117,6 @@ const getAllUsers = async (req, res) => {
 //     });
 //   }
 // };
-
-
 
 const getAdminData = async (req, res) => {
   try {
@@ -143,23 +151,72 @@ const getIdByUpdate = async (req, res) => {
   }
 };
 
+// const updateAdmin = async (req, res) => {
+//   try {
+//     const { objId } = req.query;
+//     const updatedAmin = await adminData.findByIdAndUpdate(
+//       { _id: objId },
+//       req.body,
+//       { new: true }
+//     );
+//     if (!updatedAmin) {
+//       res.status(404).json({
+//         message: "Admin not found",
+//       });
+//     }
+//     res.status(200).json({
+//       updatedAmin,
+//       message: "Admin Updated Successfully",
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
+//slots
 
 const updateAdmin = async (req, res) => {
   try {
-    const { objId } = req.query;
-    const updatedAmin = await adminData.findByIdAndUpdate(
-      { _id: objId },
-      req.body,
-      { new: true }
-    );
-    if (!updatedAmin) {
-      res.status(404).json({
-        message: "Admin not found",
-      });
+    let { objId } = req.query;
+    let file = req.file;
+    let newFile = req.file;
+
+
+    let data = {
+      ...req.body,
+    };
+    
+    if (newFile) {
+      const oldFile = await adminData.findById({ _id: objId });
+      
+
+      if (!oldFile) {
+        return res.status(404).json({ Message: "Data Not Found.." });
+      }
+      if (oldFile.profileFileName) {
+        fs.unlinkSync(`${oldFile.filePath}`);
+
+        data.profileFileName = newFile.filename;
+        data.filePath = newFile.path;
+        data.fileType = newFile.mimetype;
+      }else{
+        data = {
+          ...data,
+          profileFileName: file.filename,
+          filePath: file.path,
+          fileType: file.mimetype
+        }
+      }
     }
+    const updatedAdmin = await adminData.findByIdAndUpdate(objId, data, {
+      new: true,
+    });
+
     res.status(200).json({
-      updatedAmin,
-      message: "Admin Updated Successfully",
+      updatedAdmin,
+      message: "Admin profile updated successfully",
     });
   } catch (error) {
     res.status(400).json({
@@ -168,7 +225,58 @@ const updateAdmin = async (req, res) => {
   }
 };
 
-//slots
+// const updateAdmin = async (req, res) => {
+//   try {
+//     const { _id } = req.query; // Use this to differentiate between create and update
+//     let file = req.file; // Get the uploaded file
+//     console.log(req.file);
+    
+//     let data = { ...req.body }; // Merge form data
+
+//     if (file) {
+//       data.profileFileName = file.filename;
+//       data.filePath = file.path;
+//       data.fileType = file.mimetype;
+//     }
+
+//     if (objId) {
+//       // Update existing admin
+//       const oldAdmin = await adminData.findById(objId);
+//       if (!oldAdmin) {
+//         return res.status(404).json({ message: "Admin not found" });
+//       }
+
+//       // Delete old file if new file is uploaded
+//       if (file && oldAdmin.profileFileName) {
+//         fs.unlinkSync(oldAdmin.filePath);
+//       }
+
+//       const updatedAdmin = await adminData.findByIdAndUpdate(objId, data, {
+//         new: true,
+//       });
+
+//       return res.status(200).json({
+//         message: "Admin profile updated successfully",
+//         updatedAdmin,
+//       });
+//     } else {
+//       // Create new admin
+//       const newAdmin = new adminData(data);
+//       await newAdmin.save();
+
+//       return res.status(201).json({
+//         message: "Admin created successfully",
+//         newAdmin,
+//       });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
+
 
 const createSlot = async (req, res) => {
   try {
@@ -229,7 +337,6 @@ const createSlot = async (req, res) => {
 //   }
 // };
 
-
 // const createSlot = async (req, res) => {
 //   try {
 //     const { doctor_id } = req.body;
@@ -256,20 +363,19 @@ const createSlot = async (req, res) => {
 
 const getSlotById = async (req, res) => {
   try {
-    const { doctor_id } = req.query;
+    const { doctor_id, date } = req.query;
 
-    let findDoctorSlot = await slot.findOne({ doctor_id });
-
+    let findDoctorSlot = await slot.findOne({ doctor_id, date });
+    
     if (!findDoctorSlot) {
       return res.status(404).json({ message: "Data not found" });
     }
-    console.log(findDoctorSlot.slots);
+    console.log("gfydh",findDoctorSlot.slots);
     res.json(findDoctorSlot);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-
 
 const getSlotByIdForUpdate = async (req, res) => {
   try {
@@ -280,6 +386,7 @@ const getSlotByIdForUpdate = async (req, res) => {
     if (!findDoctorSlot) {
       return res.status(404).json({ message: "Data not found" });
     }
+    
     console.log(findDoctorSlot.slots);
     res.json(findDoctorSlot);
   } catch (error) {
@@ -291,7 +398,7 @@ const editSlots = async (req, res) => {
   try {
     const { objId } = req.query;
 
-    const updateAdminSlot = await adminData.findByIdAndUpdate(objId, req.body, {
+    const updateAdminSlot = await slot.findByIdAndUpdate(objId, req.body, {
       new: true,
     });
 
@@ -306,7 +413,6 @@ const editSlots = async (req, res) => {
   }
 };
 
-
 module.exports = {
   addAdmin,
   getAllUsers,
@@ -318,5 +424,5 @@ module.exports = {
   getSlotById,
   editSlots,
   getSlotByIdForUpdate,
-  getLimitedData
+  getLimitedData,
 };

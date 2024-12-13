@@ -3,6 +3,7 @@ const connection = require("./config/connectdb");
 const superRouter = require("./routes/superAdmin.route")
 const adminRouter = require("./routes/admin.route")
 const productRouter = require("./routes/product.route")
+const slotRoutes = require("./routes/slots.route")
 
 require("dotenv").config();
 const cors = require("cors");
@@ -21,6 +22,7 @@ connection();
 app.use("/super", superRouter);
 app.use("/admin", adminRouter);
 app.use("/pharmacy", productRouter)
+app.use("/api", slotRoutes);
 
 
 app.listen(port, () => {

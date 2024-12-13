@@ -3,6 +3,7 @@ const router = express.Router();
 const controller = require("../controllers/admin.controller");
 const { verifyToken } = require("../middlewares/authToken");
 const superVerifyToken = require("../middlewares/authSuper");
+const singleUpload = require("../middlewares/multer")
 
 
 // super Admin
@@ -31,7 +32,7 @@ router
   .route("/profileadd")
   .post(controller.addAdmin)
   .get(controller.getAllUsers)
-  .put(controller.updateAdmin);
+  .put(singleUpload.singleUpload,controller.updateAdmin);
 
 router.route("/getprofile").get(controller.getIdByUpdate);
 
@@ -43,7 +44,6 @@ router
   .route("/slots")
   .post(controller.createSlot)
   .get(controller.getSlotById) 
-
   .put(controller.editSlots);
 
 module.exports = router;

@@ -2,6 +2,7 @@
 const superAdmin = require("../models/superAdmin.model");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser} =require("../utils/mailSend")
+const sendMail = require("../utils/changePassmail")
 const bcrypt = require("bcrypt");
 const generateToken = require("../middlewares/authSuper")
 
@@ -62,5 +63,43 @@ const signIn = async (req, res) => {
     })
   }
 }
-module.exports = { signup, signIn };
+
+
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const { _id } = req.userData;
+  
+  try {
+    const user = await superAdmin.superAdmin.findById(_id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Old password is incorrect" });
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+
+    user.password = hashedPassword;
+    await user.save();
+
+    // Send email notification
+    await sendMail({
+      to: user.email,
+      subject: "Password Changed",
+      text: `Hello ${user.name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
+    });
+
+    res.status(200).json({ message: "Password updated successfully. A confirmation email has been sent." });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+module.exports = { signup, signIn, changePassword };
 
