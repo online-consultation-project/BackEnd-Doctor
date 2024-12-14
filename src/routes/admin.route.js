@@ -38,12 +38,14 @@ router.route("/getprofile").get(controller.getIdByUpdate);
 
 router.route("/getadminProfile").get(controller.getAdminData);
 
-router.route("/getslotforupdate").get(controller.getSlotByIdForUpdate);
+router.route("/change-password").put(controller.changePassword)
 
-router
-  .route("/slots")
-  .post(controller.createSlot)
-  .get(controller.getSlotById) 
-  .put(controller.editSlots);
+// router.route("/getslotforupdate").get(controller.getSlotByIdForUpdate);
+
+// router
+//   .route("/slots")
+//   .post(controller.createSlot)
+//   .get(controller.getSlotById) 
+//   .put(controller.editSlots);
 
 module.exports = router;

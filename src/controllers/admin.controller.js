@@ -1,8 +1,9 @@
-const { adminData, slot } = require("../models/admin.model");
+const { admin_data } = require("../models/admin.model");
 const bcrypt = require("bcrypt");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser } = require("../utils/mailSend");
 const { generateToken } = require("../middlewares/authToken");
+const sendMail = require("../utils/changePassmail")
 const fs = require("fs");
 
 const addAdmin = async (req, res) => {
@@ -11,7 +12,7 @@ const addAdmin = async (req, res) => {
     // const file = req.file;
     console.log(req.body);
 
-    const findEmail = await adminData.findOne({ email });
+    const findEmail = await admin_data.findOne({ email });
     if (findEmail) {
       return res.status(400).json({
         message: "Email already exists",
@@ -32,7 +33,7 @@ const addAdmin = async (req, res) => {
     //     fileType: file.mimetype,
     //   };
     // }
-    let addAdmindata = await adminData.create(data);
+    let addAdmindata = await admin_data.create(data);
     await sendMailToUser(email, name, password);
     res.status(200).json({
       addAdmindata,
@@ -48,7 +49,7 @@ const addAdmin = async (req, res) => {
 const AdminSignin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const findEmail = await adminData.findOne({ email });
+    const findEmail = await admin_data.findOne({ email });
     if (!email) {
       return res.status(400).json({
         message: "Email not registered..!",
@@ -76,7 +77,7 @@ const AdminSignin = async (req, res) => {
 
 const getLimitedData = async (req, res) => {
   try {
-    const getLimitData = await adminData.find().sort({ createAt: -1 }).limit(5);
+    const getLimitData = await admin_data.find().sort({ createAt: -1 }).limit(5);
     res.status(200).json({
       getLimitData,
     });
@@ -89,7 +90,7 @@ const getLimitedData = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const findAllUser = await adminData.find();
+    const findAllUser = await admin_data.find();
     res.status(200).json(findAllUser);
   } catch (error) {
     res.status(404).json({
@@ -101,7 +102,7 @@ const getAllUsers = async (req, res) => {
 // const getIdByUpdate = async (req, res) => {
 //   try {
 //     let { objId } = req.query;
-//     const updatedData = await adminData.findByIdAndUpdate(objId, req.body, {new: true})
+//     const updatedData = await admin_data.findByIdAndUpdate(objId, req.body, {new: true})
 //     if (!updatedData) {
 //       res.status(404).json({
 //         message: "User not found",
@@ -121,7 +122,7 @@ const getAllUsers = async (req, res) => {
 const getAdminData = async (req, res) => {
   try {
     const id = req.query;
-    const getProfile = await adminData.findOne({ _id: id });
+    const getProfile = await admin_data.findOne({ _id: id });
     console.log("sri", getProfile);
 
     if (!getProfile) {
@@ -140,7 +141,7 @@ const getIdByUpdate = async (req, res) => {
     const { _id } = req.query;
     console.log(req.query);
 
-    const findAdmin = await adminData.findOne({ _id: _id });
+    const findAdmin = await admin_data.findOne({ _id: _id });
     if (!findAdmin) {
       return res.status(404).json({ message: "Admin Not Found" });
     }
@@ -154,7 +155,7 @@ const getIdByUpdate = async (req, res) => {
 // const updateAdmin = async (req, res) => {
 //   try {
 //     const { objId } = req.query;
-//     const updatedAmin = await adminData.findByIdAndUpdate(
+//     const updatedAmin = await admin_data.findByIdAndUpdate(
 //       { _id: objId },
 //       req.body,
 //       { new: true }
@@ -189,7 +190,7 @@ const updateAdmin = async (req, res) => {
     };
     
     if (newFile) {
-      const oldFile = await adminData.findById({ _id: objId });
+      const oldFile = await admin_data.findById({ _id: objId });
       
 
       if (!oldFile) {
@@ -210,7 +211,7 @@ const updateAdmin = async (req, res) => {
         }
       }
     }
-    const updatedAdmin = await adminData.findByIdAndUpdate(objId, data, {
+    const updatedAdmin = await admin_data.findByIdAndUpdate(objId, data, {
       new: true,
     });
 
@@ -225,6 +226,45 @@ const updateAdmin = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const { _id } = req.adminAuthData;
+  
+  try {
+    const user = await admin_data.findById(_id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Old password is incorrect" });
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+
+    user.password = hashedPassword;
+    await user.save();
+
+    const name = user.firstName + " " + user.lastName;
+
+    // Send email notification
+    await sendMail({
+      to: user.email,
+      subject: "Password Changed",
+      text: `Hello ${name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
+    });
+
+    res.status(200).json({ message: "Password updated successfully..." });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
+    console.log(error)
+  }
+};
+
 // slot
 
 // const createSlot = async (req, res) => {
@@ -235,7 +275,7 @@ const updateAdmin = async (req, res) => {
 //       return res.status(400).json({ message: "Doctor ID is required" });
 //     }
 
-//     const findAdmin = await adminData.findById(doctor_id);
+//     const findAdmin = await admin_data.findById(doctor_id);
 
 //     if (!findAdmin) {
 //       return res.status(404).json({ message: "Doctor Not Found" });
@@ -311,4 +351,5 @@ module.exports = {
   AdminSignin,
   getAdminData,
   getLimitedData,
+  changePassword,
 };

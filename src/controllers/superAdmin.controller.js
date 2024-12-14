@@ -88,14 +88,16 @@ const changePassword = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
 
+    const name = user.userName
+
     // Send email notification
     await sendMail({
       to: user.email,
       subject: "Password Changed",
-      text: `Hello ${user.name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
+      text: `Hello ${name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
     });
 
-    res.status(200).json({ message: "Password updated successfully. A confirmation email has been sent." });
+    res.status(200).json({ message: "Password updated successfully..." });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }

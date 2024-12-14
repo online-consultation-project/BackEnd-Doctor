@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const superAdmin = require("../models/superAdmin.model")
+const superAdminModel = require("../models/superAdmin.model")
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
 const generateToken = (data) => {
@@ -19,7 +19,7 @@ const verifyToken = async (req, res, next) => {
     const payload = jwt.verify(withoutBearer, key);
 
 
-    const checkUser = await superAdmin.superAdmin.findById(payload.data._id)
+    const checkUser = await superAdminModel.superAdmin.findById(payload.data._id)
     console.log(checkUser);
     if (!checkUser)
       return res

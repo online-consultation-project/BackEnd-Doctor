@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const {adminData} = require("../models/admin.model");
+const { admin_data} = require("../models/admin.model");
 
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
@@ -20,13 +20,13 @@ console.log(token);
     const payload = jwt.verify(withoutBearer, key);
 
 
-    const checkUser = await adminData.findById(payload.data._id);
+    const checkUser = await admin_data.findById(payload.data._id);
     console.log(checkUser);
     if (!checkUser)
       return res
         .status(404)
         .json({ Message: "user not found for this token..." });
-    req.userData = checkUser;
+    req.adminAuthData = checkUser;
     next();
   } catch (error) {
     console.log(error);
