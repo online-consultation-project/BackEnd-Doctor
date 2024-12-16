@@ -3,8 +3,8 @@ const router = express.Router();
 const controller = require("../controllers/admin.controller");
 const { verifyToken } = require("../middlewares/authToken");
 const superVerifyToken = require("../middlewares/authSuper");
+const singleUpload = require("../middlewares/multer")
 
-router.route("/adminsigin").post(controller.AdminSignin);
 
 // super Admin
 
@@ -13,6 +13,9 @@ router
   .post(controller.addAdmin)
   .get(controller.getAllUsers)
   .put(superVerifyToken.verifyToken, controller.updateAdmin);
+router
+.route("/limitedgetadmin")
+.get(superVerifyToken.verifyToken,controller.getLimitedData)
 
 router
   .route("/getadmin")
@@ -20,25 +23,29 @@ router
 
 // admin
 
+router.route("/adminsigin").post(controller.AdminSignin);
+
+
 router.use(verifyToken);
 
 router
   .route("/profileadd")
   .post(controller.addAdmin)
   .get(controller.getAllUsers)
-  .put(controller.updateAdmin);
+  .put(singleUpload.singleUpload,controller.updateAdmin);
 
 router.route("/getprofile").get(controller.getIdByUpdate);
 
 router.route("/getadminProfile").get(controller.getAdminData);
 
-router.route("/getslotforupdate").get(controller.getSlotForUpdate);
+router.route("/change-password").put(controller.changePassword)
 
-router
-  .route("/slots")
-  .post(controller.createSlot)
-  .get(controller.getSlotById) 
+// router.route("/getslotforupdate").get(controller.getSlotByIdForUpdate);
 
-  .put(controller.editSlots);
+// router
+//   .route("/slots")
+//   .post(controller.createSlot)
+//   .get(controller.getSlotById) 
+//   .put(controller.editSlots);
 
 module.exports = router;

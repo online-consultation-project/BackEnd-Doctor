@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const superAdminModel = require("../models/superAdmin.model")
+const userModel = require("../models/user.model")
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
 const generateToken = (data) => {
@@ -18,9 +18,7 @@ const verifyToken = async (req, res, next) => {
   try {
     const payload = jwt.verify(withoutBearer, key);
 
-
-    const checkUser = await superAdminModel.superAdmin.findById(payload.data._id)
-    console.log(checkUser);
+    const checkUser = await userModel.User.findById(payload.data._id)
     if (!checkUser)
       return res
         .status(404)
@@ -40,3 +38,4 @@ module.exports = {
   generateToken,
   verifyToken,
 };
+

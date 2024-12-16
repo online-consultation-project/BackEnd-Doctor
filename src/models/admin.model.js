@@ -61,47 +61,23 @@ const adminSchema = mongoose.Schema(
     location: {
       type: String,
     },
-
     employement: {
       type: String,
     },
     slotCreatedDate: {
       type: String,
-      required: true,
-    },
-    AdminAvailableSlots: {
-      type: [String],
-      required: true,
     },
     password: {
       type: String,
     },
-  },
-  {
-    timestamps: true,
-    TimeRanges: true,
-  }
-);
-
-const adminData = mongoose.model("admin_data", adminSchema);
-
-const slotSchema = mongoose.Schema(
-  {
-    _id: {
+    profileFileName: {
       type: String,
-      default: v4,
     },
-    doctor_id: {
+    filePath: {
       type: String,
-      required: true,
     },
-    slots: {
-      type: [String],
-      required: true,
-    },
-    slotDate: {
+    fileType: {
       type: String,
-      required: true,
     },
   },
   {
@@ -110,6 +86,32 @@ const slotSchema = mongoose.Schema(
   }
 );
 
-const slot = mongoose.model("slots", slotSchema);
+const admin_data = mongoose.model("admin_data", adminSchema);
 
-module.exports = { adminData, slot };
+const SlotSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: v4
+  },
+  doctorId: {
+    type: String,
+    ref: 'admin_data',
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  slots: {
+    type: [String],
+    required: true,
+  },
+},
+{
+  timestamps: true,
+  TimeRanges: true,
+});
+
+const slot = mongoose.model('Avail_Slot', SlotSchema);
+
+module.exports = { admin_data, slot };

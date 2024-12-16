@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require("../middlewares/authToken");
+const { verifyToken } = require("../middlewares/authSuper");
 const controller = require("../controllers/product.controller");
 const { singleUpload } = require("../middlewares/multer");
 
