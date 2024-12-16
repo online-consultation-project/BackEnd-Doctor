@@ -5,9 +5,21 @@ const controller = require("../controllers/product.controller");
 const { singleUpload } = require("../middlewares/multer");
 const userVerifytoken = require("../middlewares/userAuthToken")
 
-router.use(userVerifytoken.verifyToken)
+router
+.route("/product")
+.post(singleUpload, controller.createProduct,verifyToken)
+.get(controller.getProduct,verifyToken)
+.put(singleUpload,controller.updateProduct,verifyToken)
+
+router
+.route("/productgetdata")
+.get(controller.getProductById,verifyToken)
+
+
 
 //  USER PANEL
+router.use(userVerifytoken.verifyToken)
+
 router
 .route("/userproductdata")
 .get(controller.getLimitedProduct)
@@ -17,20 +29,5 @@ router
 router
 .route("/categoryproductforhome")
 .get(controller.getProductCategoryForHome)
-
-router.use(verifyToken)
-
-router
-.route("/product")
-.post(singleUpload, controller.createProduct)
-.get(controller.getProduct)
-.put(singleUpload,controller.updateProduct)
-
-router
-.route("/productgetdata")
-.get(controller.getProductById)
-
-
-
 
 module.exports = router;

@@ -24,7 +24,7 @@ router
 // admin
 
 router.route("/adminsigin").post(controller.AdminSignin);
-
+router.post("/reset-password", controller.resetPassword);
 
 router.use(verifyToken);
 

@@ -266,6 +266,40 @@ const changePassword = async (req, res) => {
 };
 
 
+const resetPassword = async (req, res) => {
+  const { email, password, confirmPassword } = req.body;
+
+  try {
+
+    const user = await admin_data.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    const name = user.firstName + " " + user.lastName;
+
+    // Send email notification
+    await sendMail({
+      to: user.email,
+      subject: "Password Changed",
+      text: `Hello ${name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
+    });
+
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+
+
 module.exports = {  
   addAdmin,
   getAllUsers,
@@ -275,4 +309,5 @@ module.exports = {
   getAdminData,
   getLimitedData,
   changePassword,
+  resetPassword,
 };
