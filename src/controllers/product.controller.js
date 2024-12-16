@@ -105,9 +105,58 @@ const updateProduct = async (req, res) => {
   }
 };
 
+
+
+// USER PANEL
+//OUR PRODUCT SECTION ON MEDICINE PAGE
+const getLimitedProduct = async (req, res) => {
+  try {
+    const getLimitProduct = await productModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(4);
+    res.status(200).json({
+      getLimitProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// GET CATEGORY PRODUCT TO DISPLAY ON MEDICINE HOME
+
+const getProductCategoryForHome = async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
+    const getCategoryProduct = await productModel
+      .find({ productCategory: category })
+      .sort({ createdAt: -1 })
+      .limit(4);
+
+    if (!getCategoryProduct || getCategoryProduct.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No Products Found in this Category..!" });
+    }
+    res.status(202).json({ getCategoryProduct });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createProduct,
   getProduct,
   updateProduct,
   getProductById,
+  getLimitedProduct,
+  getProductCategoryForHome,
 };

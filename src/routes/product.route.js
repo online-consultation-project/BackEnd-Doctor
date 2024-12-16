@@ -17,4 +17,15 @@ router
 .get(controller.getProductById)
 
 
+//  USER PANEL
+router
+.route("/userproductdata")
+.get(controller.getLimitedProduct)
+
+// GET CATEGORY PRODUCT TO DISPLAY ON MEDICINE HOME
+
+router
+.route("/categoryproductforhome")
+.get(controller.getProductCategoryForHome)
+
 module.exports = router;

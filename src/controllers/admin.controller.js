@@ -181,32 +181,13 @@ const createSlot = async (req, res) => {
 
 
 
-const addSlots = async (req, res) => {
-  try {
-    const { objId } = req.query;
-
-    const updateAdminSlot = await adminData.findByIdAndUpdate(objId, req.body, {
-      new: true,
-    });
-
-    if (!updateAdminSlot) {
-      return res.status(404).json({ message: "Admin not Found" });
-    }
-    res.json({ updateAdminSlot, message: "slot updated Successfully..!" });
-  } catch (error) {
-    res.status(400).json({
-      message: error.message,
-    });
-  }
-};
-
  const getSlotById = async (req, res) => {
   try {
     const { doctor_id } = req.query;
 
     let findDoctorSlot = await slot.findOne({ doctor_id });
 
-    if (!findDoctorSlot) {
+    if (!findDoctorSlot) {      
       return res.status(404).json({ message: "Data not found" });
     }
     console.log(findDoctorSlot.slots);
@@ -253,7 +234,7 @@ const addSlots = async (req, res) => {
   }
 };
 
-module.exports = {
+module.exports = {  
   addAdmin,
   getAllUsers,
   getIdByUpdate,
