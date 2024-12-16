@@ -47,41 +47,39 @@ const getProduct = async (req, res) => {
   }
 };
 
-
-
 const getProductById = async (req, res) => {
   try {
-    const { _id } = req.query
+    const { _id } = req.query;
     console.log(_id);
-    
-    let findProduct = await productModel.findById({_id:_id});
+
+    let findProduct = await productModel.findById({ _id: _id });
     if (!findProduct) {
       res.status().json({ message: "Product not found" });
     }
     console.log(findProduct);
-    
-    res.status(200).json({findProduct})
+
+    res.status(200).json({ findProduct });
   } catch (error) {
     res.status(400).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 const updateProduct = async (req, res) => {
   try {
     let { _id } = req.query;
     let newFile = req.file;
-    
+
     let data = {
       ...req.body,
     };
     console.log(data);
-    
+
     if (newFile) {
-      const oldFile = await productModel.findById({_id:_id});
+      const oldFile = await productModel.findById({ _id: _id });
       console.log(oldFile);
-      
+
       if (!oldFile) {
         return res.status(404).json({ message: "Data Not Found" });
       }
@@ -92,20 +90,21 @@ const updateProduct = async (req, res) => {
       data.fileType = newFile.mimetype;
     }
 
-    const updateProduct = await productModel.findByIdAndUpdate({_id:_id}, data, {new: true})
+    const updateProduct = await productModel.findByIdAndUpdate(
+      { _id: _id },
+      data,
+      { new: true }
+    );
     res.json({
       updateProduct,
       message: "Product updated successfully",
-    })
-
+    });
   } catch (error) {
     res.status(400).json({
       message: error.message,
     });
   }
 };
-
-
 
 // USER PANEL
 //OUR PRODUCT SECTION ON MEDICINE PAGE

@@ -41,8 +41,15 @@ const productSchema = new mongoose.Schema(
       type: String,
     
     },
+    subDescription:{
+      type: String,
+    },
     filePath: {
       type: String,
+    },
+    ratings:{
+      type: Number,
+
     },
     fileType: {
       type: String,

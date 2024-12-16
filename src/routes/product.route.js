@@ -3,6 +3,20 @@ const router = express.Router();
 const { verifyToken } = require("../middlewares/authSuper");
 const controller = require("../controllers/product.controller");
 const { singleUpload } = require("../middlewares/multer");
+const userVerifytoken = require("../middlewares/userAuthToken")
+
+router.use(userVerifytoken.verifyToken)
+
+//  USER PANEL
+router
+.route("/userproductdata")
+.get(controller.getLimitedProduct)
+
+// GET CATEGORY PRODUCT TO DISPLAY ON MEDICINE HOME
+
+router
+.route("/categoryproductforhome")
+.get(controller.getProductCategoryForHome)
 
 router.use(verifyToken)
 
@@ -17,15 +31,6 @@ router
 .get(controller.getProductById)
 
 
-//  USER PANEL
-router
-.route("/userproductdata")
-.get(controller.getLimitedProduct)
 
-// GET CATEGORY PRODUCT TO DISPLAY ON MEDICINE HOME
-
-router
-.route("/categoryproductforhome")
-.get(controller.getProductCategoryForHome)
 
 module.exports = router;
