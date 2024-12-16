@@ -4,6 +4,7 @@ const controller = require("../controllers/admin.controller");
 const { verifyToken } = require("../middlewares/authToken");
 const superVerifyToken = require("../middlewares/authSuper");
 const singleUpload = require("../middlewares/multer")
+const userVerifyToken = require("../middlewares/userAuthToken")
 
 
 // super Admin
@@ -20,6 +21,16 @@ router
 router
   .route("/getadmin")
   .get(superVerifyToken.verifyToken, controller.getIdByUpdate);
+
+
+
+// user
+
+router
+.route("/doctors/:category")
+.get(userVerifyToken.verifyToken, controller.fetchDoctorBycetegory)
+
+
 
 // admin
 
@@ -40,12 +51,5 @@ router.route("/getadminProfile").get(controller.getAdminData);
 
 router.route("/change-password").put(controller.changePassword)
 
-// router.route("/getslotforupdate").get(controller.getSlotByIdForUpdate);
-
-// router
-//   .route("/slots")
-//   .post(controller.createSlot)
-//   .get(controller.getSlotById) 
-//   .put(controller.editSlots);
 
 module.exports = router;

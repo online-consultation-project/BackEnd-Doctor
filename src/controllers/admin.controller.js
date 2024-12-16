@@ -298,6 +298,26 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// user panel
+
+const fetchDoctorBycetegory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const doctors = await admin_data.find({ category })
+
+    if (doctors.length === 0) {
+      res.status(404).json({ message: "No doctors found in this category"})
+    }
+
+    res.status(200).json(doctors)
+  } catch (error) {
+    res.status(error).json({
+      message: error.message
+    })
+  }
+}
+
 
 
 module.exports = {  
@@ -310,4 +330,5 @@ module.exports = {
   getLimitedData,
   changePassword,
   resetPassword,
+  fetchDoctorBycetegory
 };
