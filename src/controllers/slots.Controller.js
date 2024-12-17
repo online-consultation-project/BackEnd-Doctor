@@ -31,6 +31,8 @@ const getSlots = async (req, res) => {
     if (!slot) {
       return res.status(404).json({ message: "No slots found for this date." });
     }
+    console.log("jkkfshfksf====>",slot);
+    
     res.status(200).json(slot);
   } catch (error) {
     res.status(500).json({ message: "Server error.", error });

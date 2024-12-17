@@ -5,6 +5,7 @@ const adminRouter = require("./routes/admin.route")
 const productRouter = require("./routes/product.route")
 const slotRoutes = require("./routes/slots.route")
 const userRouter = require("./routes/user.route")
+const paymentRouter = require("./routes/razorPay.route")
 
 require("dotenv").config();
 const cors = require("cors");
@@ -25,6 +26,7 @@ app.use("/admin", adminRouter);
 app.use("/pharmacy", productRouter)
 app.use("/api", slotRoutes);
 app.use("/user", userRouter);
+app.use("/api/payment", paymentRouter)
 
 
 app.listen(port, () => {
