@@ -70,6 +70,12 @@ const adminSchema = mongoose.Schema(
     about: {
       type: String,
     },
+    address: {
+      type: String,
+    },
+    consultationFee: {
+      type: Number,
+    },
     password: {
       type: String,
     },

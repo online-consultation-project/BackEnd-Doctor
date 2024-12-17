@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser } = require("../utils/mailSend");
 const { generateToken } = require("../middlewares/authToken");
-const sendMail = require("../utils/changePassmail")
+const sendMail = require("../utils/changePassmail");
 const fs = require("fs");
 
 const addAdmin = async (req, res) => {
@@ -77,7 +77,10 @@ const AdminSignin = async (req, res) => {
 
 const getLimitedData = async (req, res) => {
   try {
-    const getLimitData = await admin_data.find().sort({ createAt: -1 }).limit(5);
+    const getLimitData = await admin_data
+      .find()
+      .sort({ createAt: -1 })
+      .limit(5);
     res.status(200).json({
       getLimitData,
     });
@@ -184,14 +187,12 @@ const updateAdmin = async (req, res) => {
     let file = req.file;
     let newFile = req.file;
 
-
     let data = {
       ...req.body,
     };
-    
+
     if (newFile) {
       const oldFile = await admin_data.findById({ _id: objId });
-      
 
       if (!oldFile) {
         return res.status(404).json({ Message: "Data Not Found.." });
@@ -202,13 +203,13 @@ const updateAdmin = async (req, res) => {
         data.profileFileName = newFile.filename;
         data.filePath = newFile.path;
         data.fileType = newFile.mimetype;
-      }else{
+      } else {
         data = {
           ...data,
           profileFileName: file.filename,
           filePath: file.path,
-          fileType: file.mimetype
-        }
+          fileType: file.mimetype,
+        };
       }
     }
     const updatedAdmin = await admin_data.findByIdAndUpdate(objId, data, {
@@ -229,22 +230,21 @@ const updateAdmin = async (req, res) => {
 const changePassword = async (req, res) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
   const { _id } = req.adminAuthData;
-  
+
   try {
     const user = await admin_data.findById(_id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(oldPassword, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Old password is incorrect" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Old password is incorrect" });
 
     if (newPassword !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
-
 
     user.password = hashedPassword;
     await user.save();
@@ -261,16 +261,14 @@ const changePassword = async (req, res) => {
     res.status(200).json({ message: "Password updated successfully..." });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
-    console.log(error)
+    console.log(error);
   }
 };
-
 
 const resetPassword = async (req, res) => {
   const { email, password, confirmPassword } = req.body;
 
   try {
-
     const user = await admin_data.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
@@ -300,27 +298,29 @@ const resetPassword = async (req, res) => {
 
 // user panel
 
-const fetchDoctorBycetegory = async (req, res) => {
+// search by location and category
+
+const fetchDocByLocation = async (req, res) => {
   try {
-    const { category } = req.params;
+    const { location, category } = req.query;
 
-    const doctors = await admin_data.find({ category })
+    const searchCondition = {};
+    if (location) searchCondition.location = location;
+    if (category) searchCondition.category = category;
 
-    if (doctors.length === 0) {
-      res.status(404).json({ message: "No doctors found in this category"})
+    const doctorsByLocation = await admin_data.find(searchCondition);
+    if (doctorsByLocation.length === 0) {
+      res.status(404).json({ message: "No Docotors Found in this Location " });
     }
-
-    res.status(200).json(doctors)
+    res.status(200).json(doctorsByLocation);
   } catch (error) {
-    res.status(error).json({
-      message: error.message
-    })
+    res.status(400).json({
+      message: error.message,
+    });
   }
-}
+};
 
-
-
-module.exports = {  
+module.exports = {
   addAdmin,
   getAllUsers,
   getIdByUpdate,
@@ -330,5 +330,5 @@ module.exports = {
   getLimitedData,
   changePassword,
   resetPassword,
-  fetchDoctorBycetegory
+ fetchDocByLocation,
 };

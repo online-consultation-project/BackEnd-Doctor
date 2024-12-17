@@ -35,7 +35,6 @@ const getProduct = async (req, res) => {
   try {
     let findProduct = await productModel.find();
     findProduct = [...findProduct];
-    // console.log(findProduct);
 
     res.status(200).json({
       findProduct,
