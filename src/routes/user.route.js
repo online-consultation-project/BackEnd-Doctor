@@ -7,4 +7,6 @@ router.post("/login", controller.userLogin)
 router.post("/googleAuth", controller.userGoogleAuth)
 
 
+router.post("/contact",controller.addContactUsData)
+
 module.exports = router
