@@ -33,6 +33,18 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    doctorFirstName: {
+        type: String,
+        required: true,
+    },
+    doctorLastName: {
+        type: String,
+        required: true,
+    },
+    doctorCategory: {
+        type: String,
+        required: true,
+    },
     slot: {
         type: String,
         required: true,

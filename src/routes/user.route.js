@@ -13,10 +13,10 @@ router.post("/googleAuth", controller.userGoogleAuth)
 router.post("/contact",controller.addContactUsData)
 
 
-router.use(userVerifytoken.verifyToken)
+
 router
 .route("/getUserProfile")
 .get(controller.getProfileData)
-.put(singleUpload.singleUpload,controller.updateProfile)
+.put(singleUpload.singleUpload,controller.updateProfile,userVerifytoken.verifyToken)
 
 module.exports = router
