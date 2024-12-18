@@ -126,7 +126,6 @@ const getAdminData = async (req, res) => {
   try {
     const id = req.query;
     const getProfile = await admin_data.findOne({ _id: id });
-    console.log("sri", getProfile);
 
     if (!getProfile) {
       return res.status(400).json({ message: "Mail id not exist" });

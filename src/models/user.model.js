@@ -15,6 +15,18 @@ const userSchema = new mongoose.Schema(
       require: true,
       unique: true,
     },
+    mobile: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    gender:{
+      type: String,
+    },
+    bloodGroup:{
+      type: String,
+    },
     password: {
       type: String,
     },
@@ -22,6 +34,15 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     googleId: {
+      type: String,
+    },
+    profileFileName: {
+      type: String,
+    },
+    filePath: {
+      type: String,
+    },
+    fileType: {
       type: String,
     },
   },
@@ -49,4 +70,45 @@ const contactSchema = new mongoose.Schema(
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-module.exports = { User, Contact };
+
+
+const review = require('mongoose');
+
+const reviewSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: v4,
+  },
+  title: {
+    type: String,
+
+  },
+  review: {
+    type: String,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+  },
+  docId: {
+    type: String,
+    ref: 'admin_data',  
+   
+  },
+  // userId: {
+  //   type: String,
+  //   ref: 'User',  
+  //   required: true,
+  // },
+}, {
+  timestamps: true,  
+});
+
+const Review = mongoose.model('Review', reviewSchema);
+
+
+
+module.exports = { User, Contact,Review };

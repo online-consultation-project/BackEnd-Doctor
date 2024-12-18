@@ -41,8 +41,6 @@ router.use(verifyToken);
 
 router
   .route("/profileadd")
-  .post(controller.addAdmin)
-  .get(controller.getAllUsers)
   .put(singleUpload.singleUpload, controller.updateAdmin);
 
 router.route("/getprofile").get(controller.getIdByUpdate);
