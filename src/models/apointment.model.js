@@ -36,6 +36,7 @@ const appointmentSchema = new mongoose.Schema({
     doctorFirstName: {
         type: String,
         required: true,
+        
     },
     doctorLastName: {
         type: String,
