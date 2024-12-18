@@ -15,29 +15,29 @@ router
   .put(superVerifyToken.verifyToken, controller.updateAdmin);
 router
   .route("/limitedgetadmin")
-  .get(superVerifyToken.verifyToken, controller.getLimitedData);
+  .get(controller.getLimitedData);
 
 router
   .route("/getadmin")
-  .get(superVerifyToken.verifyToken, controller.getIdByUpdate);
+  .get(controller.getIdByUpdate);
 
 // user
 
 router
   .route("/neardoctors")
-  .get(userVerifyToken.verifyToken, controller.fetchDocByLocation);
+  .get(controller.fetchDocByLocation);
 
   
 router
   .route("/getadmin/user")
-  .get(userVerifyToken.verifyToken, controller.getIdByUpdate);
+  .get( controller.getIdByUpdate);
 
 // admin
 
 router.route("/adminsigin").post(controller.AdminSignin);
 router.post("/reset-password", controller.resetPassword);
 
-router.use(verifyToken);
+// router.use(verifyToken);
 
 router
   .route("/profileadd")

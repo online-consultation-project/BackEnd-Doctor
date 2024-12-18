@@ -8,17 +8,17 @@ const userVerifytoken = require("../middlewares/userAuthToken")
 router
 .route("/product")
 .post(singleUpload, controller.createProduct,verifyToken)
-.get(controller.getProduct,verifyToken)
+.get(controller.getProduct)
 .put(singleUpload,controller.updateProduct,verifyToken)
 
 router
 .route("/productgetdata")
-.get(controller.getProductById,verifyToken)
+.get(controller.getProductById)
 
 
 
 //  USER PANEL
-router.use(userVerifytoken.verifyToken)
+
 
 router
 .route("/userproductdata")
