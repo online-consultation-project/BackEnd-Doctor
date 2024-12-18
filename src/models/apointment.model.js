@@ -8,8 +8,6 @@ const appointmentSchema = new mongoose.Schema({
     },
     userId: {
         type: String,
-        ref: "User",
-        required: true,
     },
     patientName: {
         type: String,
@@ -33,7 +31,6 @@ const appointmentSchema = new mongoose.Schema({
     },
     doctorId: {
         type: String,
-        ref: "admin_data",
         required: true,
     },
     slot: {

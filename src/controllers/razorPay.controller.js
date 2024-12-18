@@ -1,78 +1,54 @@
-const Razorpay = require("razorpay");
-const crypto = require("crypto");
-const Appointment = require("../models/apointment.model");
-const {slot} = require("../models/admin.model");
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 
-const razorpay = new Razorpay({
-  key_id: "your-razorpay-key", // Replace with your Razorpay key
-  key_secret: "your-razorpay-secret", // Replace with your Razorpay secret
+// Razorpay configuration
+const razorpayInstance = new Razorpay({
+  key_id: 'rzp_test_CYTmMpZvcD8YhS', // Replace with your Razorpay Key ID
+  key_secret: 'cs3WKjzKVwKiZvBmx5oHhaY4' // Replace with your Razorpay Key Secret
 });
 
+// Controller methods
 const createOrder = async (req, res) => {
-  const { amount, currency, name, email, phone, doctorId, date, selectedSlot } = req.body;
-
-  const options = {
-    amount: amount * 100, // Convert to paise
-    currency: currency,
-    receipt: `order_rcptid_${Date.now()}`,
-    payment_capture: 1,
-  };
-
   try {
-    const order = await razorpay.orders.create(options);
+    const { amount, currency } = req.body;
 
-    if (!order) {
-      return res.status(500).json({ success: false, message: "Error creating Razorpay order" });
-    }
+    const options = {
+      amount: amount * 100, 
+      currency,
+      receipt: `receipt_${Date.now()}`
+    };
 
+    const order = await razorpayInstance.orders.create(options);
     res.status(200).json({
       success: true,
       orderId: order.id,
-      paymentOptions: {
-        amount: order.amount,
-        currency: order.currency,
-      },
+      paymentOptions: order
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('Error creating Razorpay order:', error);
+    res.status(500).json({ success: false, message: 'Failed to create Razorpay order.' });
   }
 };
 
-const verifyPayment = async (req, res) => {
-  const { razorpay_payment_id, razorpay_order_id, razorpay_signature, ...paymentDetails } = req.body;
+const verifyPayment = (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
-  const hmac = crypto.createHmac("sha256", "your-razorpay-secret"); // Replace with your Razorpay secret
-  hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
-  const generated_signature = hmac.digest("hex");
+    console.log(req.body);
+    
 
-  if (generated_signature === razorpay_signature) {
-    try {
-      const appointment = new Appointment({
-        userId: paymentDetails.userId,
-        patientName: paymentDetails.name,
-        patientEmail: paymentDetails.email,
-        patientPhone: paymentDetails.phone,
-        patientGender: paymentDetails.gender,
-        patientAge: paymentDetails.age,
-        doctorId: paymentDetails.doctorId,
-        slot: paymentDetails.selectedSlot,
-        date: paymentDetails.date,
-        paymentStatus: "Success",
-      });
+    const hmac = crypto.createHmac('sha256', razorpayInstance.key_secret);
+    hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
+    const generatedSignature = hmac.digest('hex');
 
-      await appointment.save();
-
-      await slot.updateOne(
-        { doctorId: paymentDetails.doctorId, date: paymentDetails.date },
-        { $pull: { slots: paymentDetails.selectedSlot } }
-      );
-
-      res.status(200).json({ success: true, message: "Payment verified and appointment booked" });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Error processing appointment" });
+    if (generatedSignature === razorpay_signature) {
+      res.status(200).json({ success: true, message: 'Payment verified successfully.' });
+    } else {
+      res.status(400).json({ success: false, message: 'Payment verification failed.' });
     }
-  } else {
-    res.status(400).json({ success: false, message: "Payment verification failed" });
+  } catch (error) {
+    console.error('Error verifying Razorpay payment:', error);
+    res.status(500).json({ success: false, message: 'Failed to verify payment.' });
   }
 };
 

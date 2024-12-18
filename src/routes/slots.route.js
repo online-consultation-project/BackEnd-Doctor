@@ -1,17 +1,3 @@
-// const express = require("express")
-// const router = express.Router()
-// const controller = require("../controllers/slotsController")
-
-
-// router
-// .route("/slots")
-// .post(controller.createOrUpdateSlots)
-// .get(controller.getSlots)
-// .delete(controller.deleteSlots)
-
-
-// module.exports = router;
-
 const express = require('express');
 const router = express.Router();
 const { createSlots, getSlots, updateSlots } = require('../controllers/slots.Controller');

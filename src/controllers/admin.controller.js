@@ -25,14 +25,6 @@ const addAdmin = async (req, res) => {
       ...req.body,
       password: hash,
     };
-    // if (file) {
-    //   data = {
-    //     ...data,
-    //     productFileName: file.filename,
-    //     filePath: file.path,
-    //     fileType: file.mimetype,
-    //   };
-    // }
     let addAdmindata = await admin_data.create(data);
     await sendMailToUser(email, name, password);
     res.status(200).json({

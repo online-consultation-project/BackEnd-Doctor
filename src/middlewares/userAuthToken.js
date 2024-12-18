@@ -25,7 +25,7 @@ const verifyToken = async (req, res, next) => {
       return res
         .status(404)
         .json({ Message: "user not found for this token..." });}
-    req.userData = checkUser;
+    req.userData = checkUser.userId;
     next();
   } catch (error) {
     console.log(error);
