@@ -43,7 +43,7 @@
 
 // module.exports = { createAppointment };
 
-const Appointment = require('../models/appointment.model'); // Ensure correct path
+const Appointment = require('../models/apointment.model'); 
 
 // Create Appointment
 const createAppointment = async (req, res) => {
