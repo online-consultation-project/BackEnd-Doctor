@@ -1,6 +1,7 @@
 const jwt = require("../middlewares/userAuthToken");
 const { User, Contact } = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const fs = require("fs")
 
 const userRegister = async (req, res) => {
   const { username, email, password } = req.body;

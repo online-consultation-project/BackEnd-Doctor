@@ -39,17 +39,15 @@ const productSchema = new mongoose.Schema(
     },
     productFileName: {
       type: String,
-    
     },
-    subDescription:{
+    subDescription: {
       type: String,
     },
     filePath: {
       type: String,
     },
-    ratings:{
+    ratings: {
       type: Number,
-
     },
     fileType: {
       type: String,

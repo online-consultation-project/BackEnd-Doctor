@@ -105,7 +105,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
 //  delete a product by ID in superandmin panel
 const deleteProductById = async (req, res) => {
   const productId = req.params.id;
@@ -123,8 +122,6 @@ const deleteProductById = async (req, res) => {
     res.status(500).json({ message: 'catch error' });
   }
 };
-
-
 
 
 
