@@ -15,6 +15,9 @@ router
 .route("/productgetdata")
 .get(controller.getProductById)
 
+// delete a product by ID in superandmin panel
+
+router.delete('/productdelete/:id', controller.deleteProductById,verifyToken);
 
 
 //  USER PANEL
