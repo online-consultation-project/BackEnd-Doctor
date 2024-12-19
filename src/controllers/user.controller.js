@@ -1,7 +1,7 @@
 const jwt = require("../middlewares/userAuthToken");
 const { User, Contact } = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const fs = require("fs")
+const fs = require("fs");
 
 const userRegister = async (req, res) => {
   const { username, email, password } = req.body;
@@ -143,7 +143,6 @@ const getProfileData = async (req, res) => {
 //   }
 // };
 
-
 // updating the user profile
 // const updateProfile = async (req, res) => {
 //   const { userid } = req.query;  // Get the userId from query params
@@ -174,7 +173,6 @@ const getProfileData = async (req, res) => {
 //     return res.status(500).json({ message: "Internal server error" });
 //   }
 // };
-
 
 const updateProfile = async (req, res) => {
   try {
@@ -222,6 +220,45 @@ const updateProfile = async (req, res) => {
   }
 };
 
+//get all user data for super admin
+
+const getAllUsers = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find().skip(skip).limit(limit);
+
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users: ", error);
+    res.status(500).json({ message: "Error fetching users" });
+  }
+};
+
+//delete user from Super-admin
+const deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.filePath) {
+      fs.unlinkSync(user.filePath);
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -229,4 +266,6 @@ module.exports = {
   addContactUsData,
   updateProfile,
   getProfileData,
+  getAllUsers,
+  deleteUser,
 };

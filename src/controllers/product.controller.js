@@ -106,6 +106,7 @@ const updateProduct = async (req, res) => {
 };
 
 //  delete a product by ID in superandmin panel
+
 const deleteProductById = async (req, res) => {
   const productId = req.params.id;
 
@@ -113,17 +114,19 @@ const deleteProductById = async (req, res) => {
     const deletedProduct = await productModel.findByIdAndDelete(productId);
 
     if (!deletedProduct) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product deleted successfully' });
+    if (deletedProduct.filePath) {
+      fs.unlinkSync(deletedProduct.filePath);
+    }
+
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'catch error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 // USER PANEL
 //OUR PRODUCT SECTION ON MEDICINE PAGE
@@ -177,5 +180,5 @@ module.exports = {
   getProductById,
   getLimitedProduct,
   getProductCategoryForHome,
-  deleteProductById
+  deleteProductById,
 };
