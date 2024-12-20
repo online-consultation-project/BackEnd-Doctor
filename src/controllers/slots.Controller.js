@@ -2,7 +2,8 @@ const slotModel = require("../models/admin.model");
 
 const createSlots = async (req, res) => {
   const { doctorId, date, slots } = req.body;
-
+  console.log("body==>",req.body);
+  
   try {
     const existingSlot = await slotModel.slot.findOne({ doctorId, date });
     if (existingSlot) {

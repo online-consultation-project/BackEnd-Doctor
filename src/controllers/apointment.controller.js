@@ -179,7 +179,7 @@ const createAppointment = async (req, res) => {
 // Fetch Appointments for a Doctor
 const getAppointmentsByDoctor = async (req, res) => {
   const { doctorId } = req.params;
-  console.log(req.params);
+  // console.log("kfjjj===>",req.params);
   
 
   try {

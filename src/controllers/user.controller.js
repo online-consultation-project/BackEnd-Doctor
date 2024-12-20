@@ -246,18 +246,21 @@ const resetPassword = async (req, res) => {
 
 const SubmitReview = async (req, res) => {
   try {
-    const { title, review, rating, docId, userId } = req.body;
+    const { title, review, rating, docId, } = req.body;
+    console.log(req.body);
+    
+    const userData = req.userData2
+ 
 
-    if (!title || !review || !rating || !docId || !userId) {
+    if (!title || !review || !rating || !docId ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const newReview = new Review({
-      title,
-      review,
-      rating,
-      docId,
-      userId,
+      ...req.body,
+      userId: userData._id,
+      userName: userData.username,
+      userPic: userData.filePath,
     });
 
     await newReview.save();

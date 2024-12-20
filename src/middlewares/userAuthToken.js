@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const userModel = require("../models/user.model")
+const {User} = require("../models/user.model")
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
 const generateToken = (data) => {
@@ -11,21 +11,21 @@ const verifyToken = async (req, res, next) => {
  
   try {
     const token = req.headers.authorization;
-    console.log(token);
-    
       if (!token) {
         return res.status(401).json({ Message: "user must be signIn.." });
       }
       const withoutBearer = token.split(" ")[1];
     const payload = jwt.verify(withoutBearer, key);
 
-    const checkUser = await userModel.User.findById(payload.data._id)
-
+    const checkUser = await User.findById(payload.data._id)
+    
+     
     if (!checkUser){
       return res
         .status(404)
         .json({ Message: "user not found for this token..." });}
     req.userData = checkUser.userId;
+    req.userData2 = checkUser
     next();
   } catch (error) {
     console.log(error);

@@ -10,12 +10,13 @@ const generateToken = (data) => {
 
 const verifyToken = async (req, res, next) => {
   const token = req.headers.authorization;
-console.log(token);
+
 
   if (!token) {
     return res.status(401).json({ Message: "user must be signIn.." });
   }
   const withoutBearer = token.split(" ")[1];
+  console.log(withoutBearer);
   try {
     const payload = jwt.verify(withoutBearer, key);
 
@@ -27,6 +28,8 @@ console.log(token);
         .status(404)
         .json({ Message: "user not found for this token..." });
     req.adminAuthData = checkUser;
+    console.log(checkUser);
+    
     next();
   } catch (error) {
     console.log(error);
