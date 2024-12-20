@@ -126,53 +126,6 @@ const getProfileData = async (req, res) => {
   }
 };
 
-// // fetching the user profile
-// const getIdByUpdate = async (req, res) => {
-//   try {
-//     const { _id } = req.query;
-//     console.log(req.query);
-
-//     const findAdmin = await User.findOne({ _id: _id });
-//     if (!findAdmin) {
-//       return res.status(404).json({ message: "Admin Not Found" });
-//     }
-
-//     res.json(findAdmin);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
-
-// updating the user profile
-// const updateProfile = async (req, res) => {
-//   const { userid } = req.query;  // Get the userId from query params
-
-//   // Prepare the updated data
-//   const updatedData = {
-//     username: req.body.username,
-//     email: req.body.email,
-//     mobile: req.body.mobile,
-//     address: req.body.address,
-//     gender: req.body.gender,
-//     bloodGroup: req.body.bloodGroup,
-//   };
-
-//   // Handle profile image update
-//   if (req.file) {
-//     updatedData.profileImage = `/uploads/${req.file.filename}`;
-//   }
-
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(userid, updatedData, { new: true, runValidators: true });
-//     if (!updatedUser) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     return res.status(200).json(updatedUser);  // Return the updated user data
-//   } catch (error) {
-//     console.error("Error updating profile:", error);
-//     return res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 
 const updateProfile = async (req, res) => {
   try {
@@ -211,7 +164,7 @@ const updateProfile = async (req, res) => {
 
     res.status(200).json({
       updatedAdmin,
-      message: "Admin profile updated successfully",
+      message: "User profile updated successfully",
     });
   } catch (error) {
     res.status(400).json({
@@ -259,6 +212,37 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { email, password, confirmPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    const name = user.firstName + " " + user.lastName;
+
+    // Send email notification
+    await sendMail({
+      to: user.email,
+      subject: "Password Changed",
+      text: `Hello ${name},\n\nYour password has been successfully changed.\n\nIf you did not make this change, please contact support immediately.`,
+    });
+
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -268,4 +252,5 @@ module.exports = {
   getProfileData,
   getAllUsers,
   deleteUser,
+  resetPassword,
 };

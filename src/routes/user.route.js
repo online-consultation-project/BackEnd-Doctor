@@ -8,6 +8,7 @@ const verifyToken = require("../middlewares/authSuper")
 router.post("/register", controller.userRegister)
 router.post("/login", controller.userLogin)
 router.post("/googleAuth", controller.userGoogleAuth)
+router.post("/reset-password", controller.resetPassword)
 
 
 router.post("/contact",controller.addContactUsData)
