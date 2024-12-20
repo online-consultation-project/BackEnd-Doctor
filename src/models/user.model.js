@@ -96,12 +96,19 @@ const reviewSchema = new mongoose.Schema(
     docId: {
       type: String,
       ref: 'admin_data',  
-      required: true
     },
     userId: {
       type: String,
       ref: 'User_register',  
-      required: true
+      
+    },
+    userName: {
+      type: String,
+      
+    },
+    userPic: {
+      type: String,
+      
     }
   },
   {

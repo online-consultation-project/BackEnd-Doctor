@@ -33,7 +33,7 @@ router
 // user reviews post 
 
   router.route("/reviews")
-  .post(controller.SubmitReview)
+  .post(controller.SubmitReview,userVerifytoken.verifyToken)
   .get(controller.getReviews)
 
 module.exports = router
