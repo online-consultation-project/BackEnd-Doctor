@@ -1,5 +1,5 @@
 const jwt = require("../middlewares/userAuthToken");
-const { User, Contact } = require("../models/user.model");
+const { User, Contact, Review } = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 
@@ -126,7 +126,6 @@ const getProfileData = async (req, res) => {
   }
 };
 
-
 const updateProfile = async (req, res) => {
   try {
     let { objId } = req.query;
@@ -243,6 +242,62 @@ const resetPassword = async (req, res) => {
   }
 };
 
+//post user review
+
+const SubmitReview = async (req, res) => {
+  try {
+    const { title, review, rating, docId, userId } = req.body;
+
+    if (!title || !review || !rating || !docId || !userId) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const newReview = new Review({
+      title,
+      review,
+      rating,
+      docId,
+      userId,
+    });
+
+    await newReview.save();
+
+    res.status(200).json({
+      message: "Review successfully submitted",
+      review: newReview,
+    });
+  } catch (error) {
+    console.error("Error saving review data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+// get reviews 
+
+const getReviews = async (req,res) => {
+  try {
+    const {docId} = req.query;
+
+    if (!docId) {
+      return res.status(400).json({message:"Doctor ID is  not found "})
+
+    }
+    const reviews = await Review.find({docId})
+    .populate("userId","profileFileName")
+    .sort({createdAt: -1 })
+
+    if (!reviews.length){
+      return res.status(404).json({message:"No reviews found for this doctor"})
+
+    }
+    return res.status(200).json(reviews)
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   userRegister,
   userLogin,
@@ -253,4 +308,6 @@ module.exports = {
   getAllUsers,
   deleteUser,
   resetPassword,
+  SubmitReview,
+  getReviews
 };

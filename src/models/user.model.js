@@ -71,44 +71,45 @@ const contactSchema = new mongoose.Schema(
 const Contact = mongoose.model("Contact", contactSchema);
 
 
+//user review 
 
-const review = require('mongoose');
-
-const reviewSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: v4,
+const reviewSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      default: v4,  
+    },
+    title: {
+      type: String,
+      required: true
+    },
+    review: {
+      type: String,
+      required: true
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5
+    },
+    docId: {
+      type: String,
+      ref: 'admin_data',  
+      required: true
+    },
+    userId: {
+      type: String,
+      ref: 'User_register',  
+      required: true
+    }
   },
-  title: {
-    type: String,
-
-  },
-  review: {
-    type: String,
-    required: true,
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5,
-  },
-  docId: {
-    type: String,
-    ref: 'admin_data',  
-   
-  },
-  // userId: {
-  //   type: String,
-  //   ref: 'User',  
-  //   required: true,
-  // },
-}, {
-  timestamps: true,  
-});
+  {
+    timestamps: true  
+  }
+);
 
 const Review = mongoose.model('Review', reviewSchema);
-
 
 
 module.exports = { User, Contact,Review };

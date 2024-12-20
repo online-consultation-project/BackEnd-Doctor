@@ -30,4 +30,10 @@ router
   .delete(verifyToken.verifyToken, controller.deleteUser);  
 
 
+// user reviews post 
+
+  router.route("/reviews")
+  .post(controller.SubmitReview)
+  .get(controller.getReviews)
+
 module.exports = router
