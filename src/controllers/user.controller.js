@@ -287,7 +287,6 @@ const getReviews = async (req,res) => {
 
     }
     const reviews = await Review.find({docId})
-    .populate("userId","profileFileName")
     .sort({createdAt: -1 })
 
     if (!reviews.length){
