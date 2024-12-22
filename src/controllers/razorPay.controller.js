@@ -3,8 +3,8 @@ const crypto = require('crypto');
 
 // Razorpay configuration
 const razorpayInstance = new Razorpay({
-  key_id: 'rzp_test_1xjRZU43gpPuYd', // Replace with your Razorpay Key ID
-  key_secret: 'DzgSWIkH9P4fQdWMHOxbfXeU' // Replace with your Razorpay Key Secret
+  key_id: 'rzp_test_aEvpBee8OHqhsr', // Replace with your Razorpay Key ID
+  key_secret: 'AxHIaGuZtmmdOapR34nSgUL6' // Replace with your Razorpay Key Secret
 });
 
 // Controller methods

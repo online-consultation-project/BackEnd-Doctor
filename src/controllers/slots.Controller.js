@@ -1,4 +1,6 @@
 const slotModel = require("../models/admin.model");
+const Appointment = require("../models/apointment.model"); 
+
 
 const createSlots = async (req, res) => {
   const { doctorId, date, slots } = req.body;
@@ -23,18 +25,28 @@ const createSlots = async (req, res) => {
   }
 };
 
+
 const getSlots = async (req, res) => {
   const { doctorId } = req.params;
   const { date } = req.query;
-  console.log("=====>", doctorId, date);
+
   try {
     const slot = await slotModel.slot.findOne({ doctorId, date });
     if (!slot) {
       return res.status(404).json({ message: "No slots found for this date." });
     }
-    console.log("jkkfshfksf====>",slot);
-    
-    res.status(200).json(slot);
+
+    const bookedAppointments = await Appointment.find({
+      doctorId,
+      date,
+    }).select("slot"); // Select only the slot field
+
+    const bookedSlots = bookedAppointments.map((appointment) => appointment.slot);
+
+    res.status(200).json({
+      slots: slot.slots,
+      bookedSlots, 
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error.", error });
     console.log(error);

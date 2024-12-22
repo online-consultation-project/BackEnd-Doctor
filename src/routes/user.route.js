@@ -18,11 +18,11 @@ router.post("/contact",controller.addContactUsData)
 router
 .route("/getUserProfile")
 .get(controller.getProfileData)
-.put(singleUpload.singleUpload,controller.updateProfile,userVerifytoken.verifyToken)
+.put(singleUpload.singleUpload, userVerifytoken.verifyToken ,controller.updateProfile)
 
 router
 .route("/getalluserdata")
-.get(controller.getAllUsers,verifyToken.verifyToken)
+.get(verifyToken.verifyToken,controller.getAllUsers)
 
 
 router

@@ -37,7 +37,7 @@ router
 router.route("/adminsigin").post(controller.AdminSignin);
 router.post("/reset-password", controller.resetPassword);
 
-// router.use(verifyToken);
+router.use(verifyToken);
 
 router
   .route("/profileadd")

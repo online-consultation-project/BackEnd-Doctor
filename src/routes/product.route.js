@@ -7,9 +7,9 @@ const userVerifytoken = require("../middlewares/userAuthToken")
 
 router
 .route("/product")
-.post(singleUpload, controller.createProduct,verifyToken)
+.post(singleUpload, verifyToken,controller.createProduct)
 .get(controller.getProduct)
-.put(singleUpload,controller.updateProduct,verifyToken)
+.put(singleUpload, verifyToken,controller.updateProduct)
 
 router
 .route("/productgetdata")
@@ -17,7 +17,7 @@ router
 
 // delete a product by ID in superandmin panel
 
-router.delete('/productdelete/:id', controller.deleteProductById,verifyToken);
+router.delete('/productdelete/:id', verifyToken, controller.deleteProductById);
 
 
 //  USER PANEL
