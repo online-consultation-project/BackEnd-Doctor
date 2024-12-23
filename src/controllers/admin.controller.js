@@ -67,6 +67,19 @@ const AdminSignin = async (req, res) => {
   }
 };
 
+const adminsCount = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const count = await DataModel.countDocuments({
+      createdAt: { $lte: currentDate },
+    });
+    res.json({ count });
+  } catch (error) {
+    console.error("Error fetching count:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 const getLimitedData = async (req, res) => {
   try {
     const getLimitData = await admin_data
@@ -94,25 +107,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// const getIdByUpdate = async (req, res) => {
-//   try {
-//     let { objId } = req.query;
-//     const updatedData = await admin_data.findByIdAndUpdate(objId, req.body, {new: true})
-//     if (!updatedData) {
-//       res.status(404).json({
-//         message: "User not found",
-//       });
-//     }
-//     res.status(200).json({
-//       updatedData,
-//       message: "Data Updated Successfully",
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       message: error.message,
-//     });
-//   }
-// };
 
 const getAdminData = async (req, res) => {
   try {
@@ -146,29 +140,6 @@ const getIdByUpdate = async (req, res) => {
   }
 };
 
-// const updateAdmin = async (req, res) => {
-//   try {
-//     const { objId } = req.query;
-//     const updatedAmin = await admin_data.findByIdAndUpdate(
-//       { _id: objId },
-//       req.body,
-//       { new: true }
-//     );
-//     if (!updatedAmin) {
-//       res.status(404).json({
-//         message: "Admin not found",
-//       });
-//     }
-//     res.status(200).json({
-//       updatedAmin,
-//       message: "Admin Updated Successfully",
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       message: error.message,
-//     });
-//   }
-// };
 
 //slots
 
@@ -322,4 +293,5 @@ module.exports = {
   changePassword,
   resetPassword,
  fetchDocByLocation,
+ adminsCount,
 };

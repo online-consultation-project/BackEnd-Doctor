@@ -21,6 +21,10 @@ router
   .route("/getadmin")
   .get(controller.getIdByUpdate);
 
+router
+.route("/data-count")
+.get(controller.adminsCount);
+
 // user
 
 router
