@@ -70,7 +70,7 @@ const AdminSignin = async (req, res) => {
 const adminsCount = async (req, res) => {
   try {
     const currentDate = new Date();
-    const count = await DataModel.countDocuments({
+    const count = await admin_data.countDocuments({
       createdAt: { $lte: currentDate },
     });
     res.json({ count });

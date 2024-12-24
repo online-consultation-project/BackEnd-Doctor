@@ -7,6 +7,7 @@ const slotRoutes = require("./routes/slots.route")
 const userRouter = require("./routes/user.route")
 const paymentRouter = require("./routes/razorPay.route")
 const appointmentRouter = require("./routes/appointment.route")
+const zoomMeetingRouter = require("./routes/onlineConsultation.route")
 
 require("dotenv").config();
 const cors = require("cors");
@@ -29,6 +30,7 @@ app.use("/api", slotRoutes);
 app.use("/user", userRouter);
 app.use("/api/payment", paymentRouter)
 app.use("/api/appointment", appointmentRouter);
+app.use("/api/zoommetting", zoomMeetingRouter)
 
 
 app.listen(port, () => {

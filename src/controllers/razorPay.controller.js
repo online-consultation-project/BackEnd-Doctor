@@ -42,10 +42,15 @@ const verifyPayment = (req, res) => {
     const generatedSignature = hmac.digest('hex');
 
     if (generatedSignature === razorpay_signature) {
-      res.status(200).json({ success: true, message: 'Payment verified successfully.' });
+      res.status(200).json({
+        success: true,
+        message: "Payment verified successfully",
+      });
     } else {
-      res.status(400).json({ success: false, message: 'Payment verification failed.' });
-    }
+      res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      })}
   } catch (error) {
     console.error('Error verifying Razorpay payment:', error);
     res.status(500).json({ success: false, message: 'Failed to verify payment.' });

@@ -5,7 +5,6 @@ const createAppointment = async (req, res) => {
     userId,
     patientName,
     patientEmail,
-
     patientPhone,
     patientConsult,
     patientGender,
