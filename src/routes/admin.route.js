@@ -25,6 +25,7 @@ router
 .route("/data-count")
 .get(controller.adminsCount);
 
+
 // user
 
 router

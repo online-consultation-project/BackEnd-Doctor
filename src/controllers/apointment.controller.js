@@ -1,4 +1,5 @@
 const Appointment = require("../models/apointment.model"); // Ensure correct path
+const sendMail = require("../utils/changePassmail");
 
 const createAppointment = async (req, res) => {
   const {
@@ -64,6 +65,24 @@ const createAppointment = async (req, res) => {
     });
 
     await newAppointment.save();
+
+    await sendMail({
+      to: patientEmail,
+      subject: "Your Zoom Meeting Details",
+      html: `
+        <p>Dear ${patientName},</p>
+        <p>Your consultation meeting is scheduled as follows:</p>
+        <ul>
+          <li><strong>Doctor Name:</strong> ${`${doctorFirstName} ${doctorLastName}`}</li>
+          <li><strong>Date-Slot:</strong> ${doctorCategory}</li>
+        </ul>
+        <p>Join the meeting using the following details:</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Slot:</strong> ${slot}</p>
+        <p>Best regards,<br/>Your Team</p>
+      `,
+    });
+
     res
       .status(200)
       .json({ success: true, message: "Appointment booked successfully" });
@@ -72,6 +91,25 @@ const createAppointment = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Failed to book appointment." });
+  }
+};
+
+const getAllAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.find()
+      .sort({ createdAt: -1 })
+      .limit(25);
+    if (appointment <= 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No appointments found" });
+    }
+
+    res.status(200).json(appointment)
+  } catch (error) {
+    res.json({
+      message: error.message,
+    });
   }
 };
 
@@ -166,7 +204,7 @@ const getAcceptPatient = async (req, res) => {
     const { doctorId } = req.query;
 
     // console.log(doctorId);
-    
+
     if (!doctorId) {
       return res.status(400).json({ message: "Admin ID not found" });
     }
@@ -174,15 +212,16 @@ const getAcceptPatient = async (req, res) => {
     const getPatient = await Appointment.find({
       doctorId: doctorId,
       status: "Accepted",
-    }).sort()
+    }).sort();
 
-    console.log( "fghjk" ,getPatient);
-    
+    console.log("fghjk", getPatient);
 
     if (!getPatient.length) {
-      return res.status(404).json({message:"No Accepted Appointments are not found"})
+      return res
+        .status(404)
+        .json({ message: "No Accepted Appointments are not found" });
     }
-    res.status(200).json(getPatient)
+    res.status(200).json(getPatient);
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "server error" });
@@ -196,12 +235,16 @@ const getForAdminDashBoard = async (req, res) => {
 
   try {
     if (!doctorId) {
-      return res.status(400).json({ message: "Doctor ID is required in query parameters." });
+      return res
+        .status(400)
+        .json({ message: "Doctor ID is required in query parameters." });
     }
 
     const patients = await Appointment.find({ doctorId });
     if (!patients || patients.length === 0) {
-      return res.status(404).json({ message: "No patients found for this doctor." });
+      return res
+        .status(404)
+        .json({ message: "No patients found for this doctor." });
     }
 
     res.status(200).json(patients);
@@ -211,16 +254,12 @@ const getForAdminDashBoard = async (req, res) => {
   }
 };
 
-
-
-
-
-
 module.exports = {
   createAppointment,
   getAppointmentsByDoctor,
   updateAppointmentStatus,
   getConfirmationMessage,
   getAcceptPatient,
-  getForAdminDashBoard
+  getForAdminDashBoard,
+  getAllAppointment,
 };

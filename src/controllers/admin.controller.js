@@ -84,7 +84,7 @@ const getLimitedData = async (req, res) => {
   try {
     const getLimitData = await admin_data
       .find()
-      .sort({ createAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(5);
     res.status(200).json({
       getLimitData,

@@ -3,9 +3,17 @@ const { createAppointment } = require('../controllers/apointment.controller');
 const userVerifyToken = require('../middlewares/userAuthToken');
 const adminVerifyToken = require("../middlewares/authToken")
 const controller = require('../controllers/apointment.controller');
+const superVerifyToken = require('../middlewares/authSuper')
 
 const router = express.Router();
 
+// super admin
+
+router
+.route("/fetchallappointment")
+.get(superVerifyToken.verifyToken,controller.getAllAppointment)
+
+// user
 
 router 
 .route("/booking")
@@ -14,7 +22,7 @@ router
 .get(userVerifyToken.verifyToken,controller.getConfirmationMessage)
 
 
-
+// admin
 
 router.get("/bydoctor/:doctorId",adminVerifyToken.verifyToken ,controller.getAppointmentsByDoctor);
 
@@ -26,9 +34,6 @@ router.put("/statusupdate/:appointmentId/status", adminVerifyToken.verifyToken, 
 router
 .route("/acceptbookings")
 .get( adminVerifyToken.verifyToken,controller.getAcceptPatient)
-
-
-
 
 
 // Route to fetch patients for a specific doctor using query parameters

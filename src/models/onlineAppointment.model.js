@@ -19,7 +19,6 @@ const zoomMeetingSchema = new mongoose.Schema({
     },
     startTime: {
         type: String,
-        required: true,
     },
     duration: {
         type: Number,
@@ -44,13 +43,15 @@ const zoomMeetingSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    slot: {
+    doctorEmail: {
         type: String,
         required: true,
     },
+    slot: {
+        type: String,
+    },
     date: {
         type: String,
-        required: true,
     },
     status: {
         type: String,
