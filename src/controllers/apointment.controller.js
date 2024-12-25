@@ -189,10 +189,38 @@ const getAcceptPatient = async (req, res) => {
   }
 };
 
+//// for admin  dashboard
+
+const getForAdminDashBoard = async (req, res) => {
+  const { doctorId } = req.query;
+
+  try {
+    if (!doctorId) {
+      return res.status(400).json({ message: "Doctor ID is required in query parameters." });
+    }
+
+    const patients = await Appointment.find({ doctorId });
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({ message: "No patients found for this doctor." });
+    }
+
+    res.status(200).json(patients);
+  } catch (error) {
+    console.error("Error fetching patients by doctor:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+
+
+
+
+
 module.exports = {
   createAppointment,
   getAppointmentsByDoctor,
   updateAppointmentStatus,
   getConfirmationMessage,
-  getAcceptPatient
+  getAcceptPatient,
+  getForAdminDashBoard
 };

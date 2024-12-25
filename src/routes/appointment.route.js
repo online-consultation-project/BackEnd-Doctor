@@ -27,4 +27,13 @@ router
 .route("/acceptbookings")
 .get( adminVerifyToken.verifyToken,controller.getAcceptPatient)
 
+
+
+
+
+// Route to fetch patients for a specific doctor using query parameters
+router
+.route("/dashboard")
+.get(controller.getForAdminDashBoard)
+
 module.exports = router;

@@ -32,7 +32,7 @@ app.use("/api/payment", paymentRouter)
 app.use("/api/appointment", appointmentRouter);
 app.use("/api/zoommetting", zoomMeetingRouter)
 
-const port = 7000;
+const port = 7000 || 8000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
