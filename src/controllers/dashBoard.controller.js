@@ -102,21 +102,28 @@ const getDailyAdmin = async (req, res) => {
 
 const getDailyRevenue = async (req, res) => {
   try {
+    // Aggregate the revenue by date
     const revenueData = await Appointment.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, // Group by date
-          totalRevenue: { $sum: "$payment" }, // Sum payment for each day
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },  
+          totalRevenue: { $sum: "$payment" }, 
         },
       },
-      { $sort: { _id: 1 } }, // Sort by date (ascending)
+      {
+        $sort: { _id: 1 }, 
+      },
     ]);
-    res.json(revenueData); // Return data to the client
+
+    
+    res.json(revenueData);
   } catch (error) {
-    console.error("Error fetching revenue data:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching daily revenue:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
+
+
 
 const getTotalUsers = async (req, res) => {
   try {
