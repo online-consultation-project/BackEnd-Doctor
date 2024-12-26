@@ -141,6 +141,27 @@ const getIdByUpdate = async (req, res) => {
 };
 
 
+// Controller for deleting a doctor in super admin 
+const deleteDoctor = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Use query to find and delete the doctor
+    const deletedDoctor = await admin_data.findOneAndDelete({ _id: id });
+
+ if (deletedDoctor.filePath) {
+      fs.unlinkSync(deletedDoctor.filePath);
+    }
+    if (!deletedDoctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    res.status(200).json({ message: "Doctor deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting doctor", error: error.message });
+  }
+};
+
 //slots
 
 const updateAdmin = async (req, res) => {
@@ -294,4 +315,5 @@ module.exports = {
   resetPassword,
  fetchDocByLocation,
  adminsCount,
+ deleteDoctor
 };

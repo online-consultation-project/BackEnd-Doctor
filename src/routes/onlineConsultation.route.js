@@ -6,4 +6,11 @@ const userVerifyToken = require("../middlewares/userAuthToken")
 
 router.post("/create-meeting",userVerifyToken.verifyToken, zoomMeetingController.createMeeting);
 
+
+
+
+
+
+
+
 module.exports = router;

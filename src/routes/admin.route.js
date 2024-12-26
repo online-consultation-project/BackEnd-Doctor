@@ -26,6 +26,12 @@ router
 .get(controller.adminsCount);
 
 
+
+// Route for deleting a Admin
+router
+.route("/delete/:id")
+.delete( superVerifyToken.verifyToken,controller.deleteDoctor)
+
 // user
 
 router
