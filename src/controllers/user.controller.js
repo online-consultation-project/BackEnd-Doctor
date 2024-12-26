@@ -260,7 +260,7 @@ const SubmitReview = async (req, res) => {
       ...req.body,
       userId: userData._id,
       userName: userData.username,
-      userPic: userData.profileFileName,
+      userPic: userData.filePath,
     });
 
     await newReview.save();
