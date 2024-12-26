@@ -58,6 +58,9 @@ const appointmentSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
+    payment: {
+        type: String,
+    },
     status: {
         type: String,
         default: "Pending",
