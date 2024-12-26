@@ -22,6 +22,13 @@ router
 .get(userVerifyToken.verifyToken,controller.getConfirmationMessage)
 
 
+//checkappointment get on user panel
+
+router
+.route("/offlineappointment")
+.get(userVerifyToken.verifyToken,controller.getOfflineAppoint)
+
+
 // admin
 
 router.get("/bydoctor/:doctorId",adminVerifyToken.verifyToken ,controller.getAppointmentsByDoctor);

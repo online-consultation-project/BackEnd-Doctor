@@ -1,6 +1,7 @@
 const Appointment = require("../models/apointment.model"); // Ensure correct path
 const sendMail = require("../utils/changePassmail");
 
+
 const createAppointment = async (req, res) => {
   const {
     userId,
@@ -256,6 +257,24 @@ const getForAdminDashBoard = async (req, res) => {
   }
 };
 
+
+//// check appointment 
+const getOfflineAppoint =  async (req, res) => {
+  const userId = req.query.userId; 
+  console.log(userId);
+  try {
+    const appointments = await Appointment.find({ userId: userId });
+    if (!appointments||appointments.length===0) {
+      return res
+        .status(404)
+        .json({ message: "No Appointment found for this user." });
+    }
+    res.status(200).json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointmentsByDoctor,
@@ -264,4 +283,5 @@ module.exports = {
   getAcceptPatient,
   getForAdminDashBoard,
   getAllAppointment,
+  getOfflineAppoint,
 };
