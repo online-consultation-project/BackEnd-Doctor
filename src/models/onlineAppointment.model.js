@@ -81,6 +81,10 @@ const zoomMeetingSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    payment: {
+        type: String,
+
+    },
 }, {
     timestamps: true,
 });

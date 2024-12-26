@@ -150,6 +150,7 @@ const createMeeting = async (req, res) => {
     patientPhone,
     patientGender,
     patientAge,
+    payment,
   } = req.body;
 
   try {
@@ -211,6 +212,7 @@ const createMeeting = async (req, res) => {
       patientPhone,
       patientGender,
       patientAge,
+      payment,
     });
 
     await meetingData.save();

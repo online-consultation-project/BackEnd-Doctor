@@ -17,6 +17,7 @@ const createAppointment = async (req, res) => {
     doctorFirstName,
     doctorLastName,
     doctorCategory,
+    payment,
   } = req.body;
 
   if (paymentStatus !== "Success") {
@@ -62,6 +63,7 @@ const createAppointment = async (req, res) => {
       slot,
       date: formattedDate,
       paymentStatus,
+      payment,
     });
 
     await newAppointment.save();
