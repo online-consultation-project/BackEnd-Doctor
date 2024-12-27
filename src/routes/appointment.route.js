@@ -13,6 +13,10 @@ router
 .route("/fetchallappointment")
 .get(superVerifyToken.verifyToken,controller.getAllAppointment)
 
+router
+.route("/fetchallappointmentchart")
+.get(controller.getAllAppointment)
+
 // user
 
 router 
