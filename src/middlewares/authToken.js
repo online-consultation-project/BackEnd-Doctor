@@ -28,6 +28,7 @@ const verifyToken = async (req, res, next) => {
         .status(404)
         .json({ Message: "user not found for this token..." });
     req.adminAuthData = checkUser;
+    
     console.log(checkUser);
     
     next();

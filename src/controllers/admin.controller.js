@@ -1,4 +1,4 @@
-const { admin_data } = require("../models/admin.model");
+const { admin_data ,reports } = require("../models/admin.model");
 const bcrypt = require("bcrypt");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser } = require("../utils/mailSend");
@@ -64,6 +64,35 @@ const AdminSignin = async (req, res) => {
     res.json({
       message: error.messsage,
     });
+  }
+};
+
+
+////report by admin
+
+const createReport = async (req, res) => {
+  try {
+    const { subject, issue, detailedProblem, } = req.body;
+
+    const adminreport = req.adminAuthData
+
+    if (!subject || !issue || !detailedProblem ) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const newReport = new reports({
+
+     ...req.body,
+      doctorId:adminreport._id,
+      doctorName:adminreport.firstName,
+      email:adminreport.email,
+    });
+
+    await newReport.save();
+    return res.status(200).json({ message: "Report created successfully!" });
+  } catch (error) {
+    console.error("Error creating report:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -315,5 +344,6 @@ module.exports = {
   resetPassword,
  fetchDocByLocation,
  adminsCount,
- deleteDoctor
+ deleteDoctor,
+ createReport
 };

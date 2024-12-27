@@ -125,4 +125,18 @@ const SlotSchema = new mongoose.Schema(
 
 const slot = mongoose.model("Avail_Slot", SlotSchema);
 
-module.exports = { admin_data, slot };
+
+
+const reportSchema = new mongoose.Schema({
+  subject: { type: String, required: true },
+  issue: { type: String, required: true },
+  detailedProblem: { type: String, required: true },
+  doctorId: { type: String, required: true },
+  doctorName: { type: String, required: true },
+  email: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Report = mongoose.model("Report", reportSchema);
+
+module.exports = { admin_data, slot,Report };

@@ -45,6 +45,11 @@ router
 
 // admin
 
+
+router
+.route("/report")
+.post(controller.createReport)
+
 router.route("/adminsigin").post(controller.AdminSignin);
 router.post("/reset-password", controller.resetPassword);
 
