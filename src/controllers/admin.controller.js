@@ -1,4 +1,4 @@
-const { admin_data ,reports } = require("../models/admin.model");
+const { admin_data ,Report } = require("../models/admin.model");
 const bcrypt = require("bcrypt");
 const { passwordGenerator } = require("../utils/generator");
 const { sendMailToUser } = require("../utils/mailSend");
@@ -80,7 +80,7 @@ const createReport = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    const newReport = new reports({
+    const newReport = new Report({
 
      ...req.body,
       doctorId:adminreport._id,

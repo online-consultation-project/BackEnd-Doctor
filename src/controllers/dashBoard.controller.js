@@ -254,9 +254,8 @@ const getForDailyRevenue = async (req, res) => {
         },
       },
       {
-        // Project the result to format it as needed
         $project: {
-          _id: 0,  // Exclude the _id field
+          _id: 0,  
           totalRevenue: 1,
           date: { $dateToString: { format: "%Y-%m-%d", date: startDate } },  // Format the date
         },
@@ -296,13 +295,13 @@ const getRevenuePerWeek = async (req, res) => {
 
     // Group revenue by days of the week
     const daysOfWeek = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun",
     ];
     const revenuePerDay = appointments.reduce((acc, appt) => {
       const date = new Date(appt.date);

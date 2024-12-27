@@ -125,9 +125,12 @@ const SlotSchema = new mongoose.Schema(
 
 const slot = mongoose.model("Avail_Slot", SlotSchema);
 
-
-
 const reportSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: v4,
+  },
+
   subject: { type: String, required: true },
   issue: { type: String, required: true },
   detailedProblem: { type: String, required: true },
@@ -139,4 +142,4 @@ const reportSchema = new mongoose.Schema({
 
 const Report = mongoose.model("Report", reportSchema);
 
-module.exports = { admin_data, slot,Report };
+module.exports = { admin_data, slot, Report };

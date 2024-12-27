@@ -46,14 +46,21 @@ router
 // admin
 
 
-router
-.route("/report")
-.post(controller.createReport)
+
 
 router.route("/adminsigin").post(controller.AdminSignin);
 router.post("/reset-password", controller.resetPassword);
 
 router.use(verifyToken);
+
+
+router
+.route("/report")
+.post(controller.createReport)
+
+
+
+
 
 router
   .route("/profileadd")
