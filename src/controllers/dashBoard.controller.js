@@ -106,24 +106,21 @@ const getDailyRevenue = async (req, res) => {
     const revenueData = await Appointment.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },  
-          totalRevenue: { $sum: "$payment" }, 
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+          totalRevenue: { $sum: "$payment" },
         },
       },
       {
-        $sort: { _id: 1 }, 
+        $sort: { _id: 1 },
       },
     ]);
 
-    
     res.json(revenueData);
   } catch (error) {
-    console.error('Error fetching daily revenue:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error("Error fetching daily revenue:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
-
-
 
 const getTotalUsers = async (req, res) => {
   try {
@@ -163,6 +160,172 @@ const getTotalOnlinemeeting = async (req, res) => {
   }
 };
 
+/////ADMIN
+
+// Get total revenue for a specific doctor
+const getTotalRevenue = async (req, res) => {
+  try {
+    const { doctorId } = req.query; // Get doctorId from query params
+
+    // Fetch all appointments for the doctor
+    const appointments = await Appointment.find({
+      doctorId: doctorId,
+      status: "Accepted",
+    });
+
+    // Calculate total revenue by summing up the 'payment' field
+    const totalRevenue = appointments.reduce(
+      (acc, appointment) => acc + parseFloat(appointment.payment),
+      0
+    );
+
+    res.status(200).json({ revenue: totalRevenue }); // Send total revenue
+  } catch (err) {
+    console.error("Error fetching total revenue:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Get daily revenue for a specific doctor
+const getDailyRevenueadmin = async (req, res) => {
+  try {
+    const { doctorId } = req.query; // Get doctorId from query params
+
+    // Fetch all appointments for the doctor
+    const appointments = await Appointment.find({
+      doctorId: doctorId,
+      status: "Accepted",
+    });
+
+    // Group appointments by date and calculate revenue for each day
+    const dailyRevenue = {};
+
+    appointments.forEach((appointment) => {
+      const date = appointment.date.toISOString().split("T")[0]; // Get the date in YYYY-MM-DD format
+      const payment = parseFloat(appointment.payment);
+
+      if (!dailyRevenue[date]) {
+        dailyRevenue[date] = 0;
+      }
+      dailyRevenue[date] += payment;
+    });
+
+    // Convert dailyRevenue object to array for the response
+    const dailyRevenueArray = Object.keys(dailyRevenue).map((date) => ({
+      date: date,
+      totalRevenue: dailyRevenue[date],
+    }));
+
+    // Sort by date (ascending order)
+    dailyRevenueArray.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    res.status(200).json(dailyRevenueArray); // Send daily revenue data
+  } catch (err) {
+    console.error("Error fetching daily revenue:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getForDailyRevenue = async (req, res) => {
+  const { doctorId } = req.query;  // Get doctorId from the query string
+  const date = req.query.date;      // Get the specific date from the query string
+
+  if (!doctorId || !date) {
+    return res.status(400).json({ error: "Doctor ID and Date are required" });
+  }
+
+  try {
+    const startDate = new Date(date); // This will be in the format "YYYY-MM-DD"
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 1); // Get the next day's start time
+
+    // MongoDB aggregation pipeline
+    const aggregationPipeline = [
+      {
+        $match: {
+          doctorId: doctorId,
+          createdAt: { $gte: startDate, $lt: endDate },  // Filter based on createdAt
+        },
+      },
+      {
+        $group: {
+          _id: null, // No need to group by any specific field
+          totalRevenue: { $sum: "$payment" },  // Sum the payment field
+        },
+      },
+      {
+        // Project the result to format it as needed
+        $project: {
+          _id: 0,  // Exclude the _id field
+          totalRevenue: 1,
+          date: { $dateToString: { format: "%Y-%m-%d", date: startDate } },  // Format the date
+        },
+      },
+    ];
+
+    // Run the aggregation pipeline
+    const result = await Appointment.aggregate(aggregationPipeline);
+
+    // Check if there is any revenue data
+    if (result.length === 0) {
+      return res.status(200).json({ message: "No revenue data for this day" });
+    }
+
+    // Return the aggregated result
+    res.status(200).json(result[0]);
+  } catch (error) {
+    console.error("Error fetching daily revenue:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Revenue Per Week
+const getRevenuePerWeek = async (req, res) => {
+  try {
+    const { doctorId } = req.query;
+
+    if (!doctorId) {
+      return res.status(400).json({ error: "Doctor ID is required" });
+    }
+
+    // Fetch all accepted appointments for the given doctor
+    const appointments = await Appointment.find({
+      doctorId,
+      status: "Accepted",
+    });
+
+    // Group revenue by days of the week
+    const daysOfWeek = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+    const revenuePerDay = appointments.reduce((acc, appt) => {
+      const date = new Date(appt.date);
+      const dayIndex = date.getDay(); // 0 (Sunday) to 6 (Saturday)
+      const dayName = daysOfWeek[(dayIndex + 6) % 7]; // Shift so 0 = Monday, 6 = Sunday
+
+      if (!acc[dayName]) acc[dayName] = 0;
+      acc[dayName] += Number(appt.payment);
+      return acc;
+    }, {});
+
+    // Format result as an array of objects
+    const result = daysOfWeek.map((day) => ({
+      day,
+      totalRevenue: revenuePerDay[day] || 0, // Default to 0 if no revenue for that day
+    }));
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getDailyUsers,
   getTotalAdmins,
@@ -172,4 +335,9 @@ module.exports = {
   getDailyAdmin,
   getDailyRevenue,
   getTotalOnlinemeeting,
+  getTotalRevenue,
+  getDailyRevenueadmin,
+  
+  getRevenuePerWeek,
+  getForDailyRevenue
 };
