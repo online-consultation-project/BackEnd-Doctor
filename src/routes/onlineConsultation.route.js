@@ -21,6 +21,6 @@ router
 
 //admin
 
-router.get("/bydoctor/:doctorId",adminVerifyToken.verifyToken, zoomMeetingController.getAppointmentsByDoctor);
+router.get("/bydoctor",adminVerifyToken.verifyToken, zoomMeetingController.getAppointmentsByDoctor);
 
 module.exports = router;
