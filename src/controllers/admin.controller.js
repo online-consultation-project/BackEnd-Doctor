@@ -96,6 +96,7 @@ const createReport = async (req, res) => {
   }
 };
 
+
 const adminsCount = async (req, res) => {
   try {
     const currentDate = new Date();
@@ -332,6 +333,18 @@ const fetchDocByLocation = async (req, res) => {
   }
 };
 
+//report fetch
+
+const getRecentReports = async (req, res) => {
+  try {
+    const recentReports = await Report.find()
+
+    res.status(200).json(recentReports);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching recent reports', error: error.message });
+  }
+};
+
 module.exports = {
   addAdmin,
   getAllUsers,
@@ -345,5 +358,6 @@ module.exports = {
  fetchDocByLocation,
  adminsCount,
  deleteDoctor,
- createReport
+ createReport,
+ getRecentReports, 
 };

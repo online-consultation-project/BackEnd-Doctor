@@ -13,6 +13,8 @@ router.post("/reset-password", controller.resetPassword)
 
 router.post("/contact",controller.addContactUsData)
 
+router.get("/getcontactus", verifyToken.verifyToken, controller.getRecentReports)
+
 
 
 router

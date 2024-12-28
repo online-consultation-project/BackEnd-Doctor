@@ -287,7 +287,7 @@ const getReviews = async (req,res) => {
 
     }
     const reviews = await Review.find({docId})
-    .sort({createdAt: -1 })
+    .sort({createdAt: -1 }).limit(5)
 
     if (!reviews.length){
       return res.status(404).json({message:"No reviews found for this doctor"})
@@ -300,6 +300,16 @@ const getReviews = async (req,res) => {
   }
 }
 
+const getRecentReports = async (req, res) => {
+  try {
+    const recentReports = await Contact.find()
+
+    res.status(200).json(recentReports);
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching recent reports', error: error.message });
+  }
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -311,5 +321,6 @@ module.exports = {
   deleteUser,
   resetPassword,
   SubmitReview,
-  getReviews
+  getReviews,
+  getRecentReports,
 };

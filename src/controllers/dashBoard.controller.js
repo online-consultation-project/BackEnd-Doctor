@@ -161,30 +161,39 @@ const getTotalOnlinemeeting = async (req, res) => {
 };
 
 /////ADMIN
-
-// Get total revenue for a specific doctor
 const getTotalRevenue = async (req, res) => {
   try {
-    const { doctorId } = req.query; // Get doctorId from query params
+    const { doctorId } = req.query;
 
-    // Fetch all appointments for the doctor
+    if (!doctorId) {
+      return res.status(400).json({ error: "doctorId is required" });
+    }
+
     const appointments = await Appointment.find({
       doctorId: doctorId,
       status: "Accepted",
     });
 
-    // Calculate total revenue by summing up the 'payment' field
+    if (!appointments || appointments.length === 0) {
+      console.log("No appointments found for doctor:", doctorId);
+      return res.status(200).json(0); // Return 0 if no appointments found
+    }
+
     const totalRevenue = appointments.reduce(
-      (acc, appointment) => acc + parseFloat(appointment.payment),
+      (acc, appointment) =>
+        acc + parseFloat(appointment.payment || 0), // Ensure payment is valid
       0
     );
 
-    res.status(200).json({ revenue: totalRevenue }); // Send total revenue
+    console.log("Total Revenue:", totalRevenue);
+
+    res.status(200).json({totalRevenue: totalRevenue}); // Return total revenue
   } catch (err) {
     console.error("Error fetching total revenue:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 // Get daily revenue for a specific doctor
 const getDailyRevenueadmin = async (req, res) => {
@@ -336,7 +345,6 @@ module.exports = {
   getTotalOnlinemeeting,
   getTotalRevenue,
   getDailyRevenueadmin,
-  
   getRevenuePerWeek,
   getForDailyRevenue
 };

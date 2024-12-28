@@ -25,6 +25,10 @@ router
 .route("/data-count")
 .get(controller.adminsCount);
 
+router
+.route("/fetchreports")
+.get(superVerifyToken.verifyToken,controller.getRecentReports);
+
 
 
 // Route for deleting a Admin

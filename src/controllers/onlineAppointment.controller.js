@@ -1,106 +1,3 @@
-// const axios = require('axios');
-// const nodemailer = require('nodemailer');
-// const ZoomMeeting = require('../models/zoomMeeting.model');
-
-// // Zoom JWT credentials
-// const ZOOM_API_KEY = 'your_zoom_api_key';
-// const ZOOM_API_SECRET = 'your_zoom_api_secret';
-
-// // Helper function to generate JWT
-// const generateZoomToken = () => {
-//   const jwt = require('jsonwebtoken');
-//   const payload = {
-//     iss: ZOOM_API_KEY,
-//     exp: Math.floor(Date.now() / 1000) + 60 * 60,
-//   };
-//   return jwt.sign(payload, ZOOM_API_SECRET);
-// };
-
-// // Create Zoom Meeting
-// const createZoomMeeting = async (req, res) => {
-//   const { userId, doctorId, userEmail, doctorName, date, slot } = req.body;
-
-//   try {
-//     const token = generateZoomToken();
-
-//     // Combine date and slot to create start_time
-//     const startTime = new Date(`${date}T${slot}`).toISOString();
-
-//     const meetingOptions = {
-//       topic: `Consultation with ${doctorName}`,
-//       type: 2,
-//       start_time: startTime, // Use the combined date and slot
-//       duration: 30, // Meeting duration in minutes
-//       timezone: 'Asia/Kolkata',
-//       password: '12345',
-//     };
-
-//     // Zoom API request
-//     const response = await axios.post('https://api.zoom.us/v2/users/me/meetings', meetingOptions, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     const meetingData = response.data;
-
-//     // Save meeting details to DB
-//     const newMeeting = new ZoomMeeting({
-//       userId,
-//       doctorId,
-//       meetingId: meetingData.id,
-//       meetingLink: meetingData.join_url,
-//       meetingPassword: meetingData.password,
-//       date,
-//       slot, // Save the slot for reference
-//       startTime, // Save the combined start time
-//     });
-
-//     await newMeeting.save();
-
-//     // Send email to user
-//     const transporter = nodemailer.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: 'your_email@gmail.com',
-//         pass: 'your_email_password',
-//       },
-//     });
-
-//     const mailOptions = {
-//       from: 'your_email@gmail.com',
-//   to: userEmail,
-//   subject: 'Your Zoom Meeting Details',
-//   html: `
-//     <p>Dear User,</p>
-//     <p>Your consultation meeting is scheduled as follows:</p>
-//     <ul>
-//       <li><strong>Date:</strong> ${date}</li>
-//       <li><strong>Time:</strong> ${slot}</li>
-//     </ul>
-//     <p>Join the meeting using the following details:</p>
-//     <p><strong>Meeting Link:</strong> <a href="${meetingData.join_url}">${meetingData.join_url}</a></p>
-//     <p><strong>Meeting Password:</strong> ${meetingData.password}</p>
-//     <p>Best regards,<br/>Your Team</p>
-//   `,
-//     };
-
-//     await transporter.sendMail(mailOptions);
-
-//     res.status(200).json({
-//       success: true,
-//       message: 'Zoom meeting created and email sent successfully.',
-//       meetingData: newMeeting,
-//     });
-//   } catch (error) {
-//     console.error('Error creating Zoom meeting:', error);
-//     res.status(500).json({ success: false, message: 'Failed to create Zoom meeting.' });
-//   }
-// };
-
-// module.exports = { createZoomMeeting };
-
 require("dotenv").config();
 const axios = require("axios");
 const ZoomMeeting = require("../models/onlineAppointment.model");
@@ -284,11 +181,56 @@ const getOnlineAppoint =  async (req, res) => {
   }
 };
 
+const getAllAppointment = async (req, res) => {
+  try {
+    const appointment = await ZoomMeeting.find()
+      .sort({ createdAt: -1 })
+      .limit(25);
+    if (appointment <= 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No appointments found" });
+    }
+
+    res.status(200).json(appointment)
+  } catch (error) {
+    res.json({
+      message: error.message,
+    });
+  }
+};
+
+const getAppointmentsByDoctor = async (req, res) => {
+  const { doctorId } = req.params;
+
+  try {
+    const appointments = await ZoomMeeting.find({ doctorId }).sort({
+      createdAt: -1,
+    });
+
+    if (!appointments.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No appointments found for this doctor",
+      });
+    }
+
+    res.status(200).json({ success: true, appointments });
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch appointments" });
+  }
+};
+
 
 
 
 module.exports = {
   createMeeting,
-  getOnlineAppoint
+  getOnlineAppoint,
+  getAllAppointment,
+  getAppointmentsByDoctor,
 
 };
