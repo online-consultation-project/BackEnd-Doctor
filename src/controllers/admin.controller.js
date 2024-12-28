@@ -178,8 +178,10 @@ const deleteDoctor = async (req, res) => {
 
     // Use query to find and delete the doctor
     const deletedDoctor = await admin_data.findOneAndDelete({ _id: id });
+console.log(deleteDoctor);
 
  if (deletedDoctor.filePath) {
+  
       fs.unlinkSync(deletedDoctor.filePath);
     }
     if (!deletedDoctor) {
