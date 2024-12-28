@@ -35,7 +35,7 @@ router
 
 // admin
 
-router.get("/bydoctor/:doctorId",adminVerifyToken.verifyToken ,controller.getAppointmentsByDoctor);
+router.get("/bydoctor",adminVerifyToken.verifyToken ,controller.getAppointmentsByDoctor);
 
 // Route to update the status of an appointment
 router.put("/statusupdate/:appointmentId/status", adminVerifyToken.verifyToken, controller.updateAppointmentStatus);
