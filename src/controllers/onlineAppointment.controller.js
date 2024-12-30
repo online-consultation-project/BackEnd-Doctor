@@ -201,10 +201,11 @@ const getAllAppointment = async (req, res) => {
 };
 
 const getAppointmentsByDoctor = async (req, res) => {
-  const { doctorId } = req.params;
+  // const { doctorId } = req.params;
+  const adminData = req.adminAuthData
 
   try {
-    const appointments = await ZoomMeeting.find({ doctorId }).sort({
+    const appointments = await ZoomMeeting.find({ doctorId:adminData._id }).sort({
       createdAt: -1,
     });
 
