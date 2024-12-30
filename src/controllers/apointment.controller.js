@@ -118,10 +118,11 @@ const getAllAppointment = async (req, res) => {
 
 // Fetch Appointments for a Doctor
 const getAppointmentsByDoctor = async (req, res) => {
-  const { doctorId } = req.params;
-
+  // const { doctorId } = req.params;
+  const adminData = req.adminAuthData
+  console.log(adminData)
   try {
-    const appointments = await Appointment.find({ doctorId }).sort({
+    const appointments = await Appointment.find({ doctorId: adminData._id }).sort({
       createdAt: -1,
     });
 
