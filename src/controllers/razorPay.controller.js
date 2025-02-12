@@ -1,10 +1,11 @@
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
+require("dotenv").config()
 
 // Razorpay configuration
 const razorpayInstance = new Razorpay({
-  key_id: 'rzp_test_aEvpBee8OHqhsr', // Replace with your Razorpay Key ID
-  key_secret: 'AxHIaGuZtmmdOapR34nSgUL6' // Replace with your Razorpay Key Secret
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_secret
 });
 
 // Controller methods

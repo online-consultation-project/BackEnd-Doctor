@@ -17,7 +17,7 @@ const adminSchema = mongoose.Schema(
       type: String,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
     },
     category: {
       type: String,

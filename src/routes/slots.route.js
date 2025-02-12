@@ -13,6 +13,6 @@ router.get('/slots/user/:doctorId', userGetSlots);
 
 //superadmin
 
-router.get('/slots/super', superVerifyToken.verifyToken, getSlots);
+router.get('/slots/super/:doctorId', superVerifyToken.verifyToken, userGetSlots);
 
 module.exports = router

@@ -201,7 +201,6 @@ const getAllAppointment = async (req, res) => {
 };
 
 const getAppointmentsByDoctor = async (req, res) => {
-  // const { doctorId } = req.params;
   const adminData = req.adminAuthData
 
   try {

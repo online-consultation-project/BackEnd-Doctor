@@ -3,15 +3,6 @@ const Appointment = require("../models/apointment.model");
 const { User } = require("../models/user.model");
 const ZoomMeeting = require("../models/onlineAppointment.model");
 
-// const getMonthlyRevenue = async (req, res) => {
-//     try {
-//       const revenueData = await Revenue.find();
-//       res.status(200).json(revenueData);
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-//   };
-
 const getDailyUsers = async (req, res) => {
   try {
     const usersData = await User.aggregate([
