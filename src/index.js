@@ -35,7 +35,7 @@ app.use("/api/zoommetting", zoomMeetingRouter)
 app.use("/api/dashboard",dashBoard)
 
 
-const port = 7000 || 8000;
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
