@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/upload", express.static("src/fileStorage"))
 connection();
 
-
+// api
 app.use("/super", superRouter);
 app.use("/admin", adminRouter);
 app.use("/pharmacy", productRouter)

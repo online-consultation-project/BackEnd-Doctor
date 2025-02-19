@@ -8,7 +8,7 @@ const fs = require("fs");
 
 const addAdmin = async (req, res) => {
   try {
-    const { email, firstName, lastName } = req.body;
+    const { email,  firstName, lastName } = req.body;
     // const file = req.file;
     console.log(req.body);
 
