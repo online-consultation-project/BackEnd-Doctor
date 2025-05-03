@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { admin_data} = require("../models/admin.model");
+const adminModel = require("../models/admin.model");
 
 const key = "r5sqdtfkgsa^RDT32l43276tasddxzjcnhisydg";
 
@@ -21,7 +21,7 @@ const verifyToken = async (req, res, next) => {
     const payload = jwt.verify(withoutBearer, key);
 
 
-    const checkUser = await admin_data.findById(payload.data._id);
+    const checkUser = await adminModel.admin_data.findById(payload.data._id);
     console.log(checkUser);
     if (!checkUser)
       return res
